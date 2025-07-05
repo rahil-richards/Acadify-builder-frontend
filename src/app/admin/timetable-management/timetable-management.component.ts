@@ -78,11 +78,10 @@ export class TimetableManagementComponent implements OnInit, OnDestroy {
 
   // UI state
   loading = false;
-  showSubjectPanel = true;
-  showFacultyPanel = true;
-  draggedSubject: Subject | null = null;
   selectedSlot: LectureSlot | null = null;
   showAssignmentDialog = false;
+  selectedSubjectId = "";
+  selectedFacultyId = "";
 
   // Days of week
   daysOfWeek = [
@@ -348,16 +347,6 @@ export class TimetableManagementComponent implements OnInit, OnDestroy {
     this.detectConflicts();
   }
 
-  // Subject assignment methods
-  onSubjectClick(subject: Subject, slot: LectureSlot) {
-    this.assignSubjectToSlot(subject, slot);
-  }
-
-  private assignSubjectToSlot(subject: Subject, slot: LectureSlot) {
-    this.selectedSlot = { ...slot, subjectId: subject.id, type: subject.type };
-    this.showAssignmentDialog = true;
-  }
-
   // Faculty assignment
   assignFaculty(facultyId: string) {
     if (!this.selectedSlot) return;
@@ -612,24 +601,63 @@ export class TimetableManagementComponent implements OnInit, OnDestroy {
 
   // Dialog methods
   openSlotAssignment(slot: LectureSlot) {
-    // For now, just auto-assign the first available subject
-    if (this.subjects.length > 0) {
-      this.assignSubjectToSlot(this.subjects[0], slot);
-    }
+    this.selectedSlot = { ...slot }; // Create a copy to ensure change detection
+    this.showAssignmentDialog = true;
   }
 
   closeAssignmentDialog() {
     this.showAssignmentDialog = false;
     this.selectedSlot = null;
+    this.selectedSubjectId = "";
+    this.selectedFacultyId = "";
   }
 
-  // Toggle panels
-  toggleSubjectPanel() {
-    this.showSubjectPanel = !this.showSubjectPanel;
-  }
+  // Assign lecture with form data
+  assignLecture() {
+    if (
+      !this.selectedSlot ||
+      !this.selectedSubjectId ||
+      !this.selectedFacultyId
+    ) {
+      this.messageService.add({
+        severity: "warn",
+        summary: "Incomplete Information",
+        detail: "Please select both subject and faculty",
+        life: 3000,
+      });
+      return;
+    }
 
-  toggleFacultyPanel() {
-    this.showFacultyPanel = !this.showFacultyPanel;
+    const subject = this.subjects.find((s) => s.id === this.selectedSubjectId);
+    const faculty = this.faculties.find((f) => f.id === this.selectedFacultyId);
+
+    if (!subject || !faculty) return;
+
+    // Check if faculty can teach this subject
+    if (!faculty.subjects.includes(subject.id)) {
+      this.messageService.add({
+        severity: "warn",
+        summary: "Invalid Assignment",
+        detail: `${faculty.name} is not qualified to teach ${subject.name}`,
+        life: 3000,
+      });
+      return;
+    }
+
+    this.selectedSlot.subjectId = this.selectedSubjectId;
+    this.selectedSlot.facultyId = this.selectedFacultyId;
+    this.selectedSlot.type = subject.type;
+    this.selectedSlot.isAssigned = true;
+
+    this.closeAssignmentDialog();
+    this.detectConflicts();
+
+    this.messageService.add({
+      severity: "success",
+      summary: "Lecture Assigned",
+      detail: `${subject.name} assigned to ${faculty.name}`,
+      life: 3000,
+    });
   }
 
   // Helper methods for template calculations
@@ -647,5 +675,41 @@ export class TimetableManagementComponent implements OnInit, OnDestroy {
 
   getConflictsCount(): number {
     return this.conflicts.size;
+  }
+
+  // Helper methods for template
+  getTimeSlotTime(timeSlotId: string): string {
+    const timeSlot = this.timeSlots.find((t) => t.id === timeSlotId);
+    return timeSlot ? timeSlot.time : "";
+  }
+
+  hasQualifiedFaculties(subjectId: string): boolean {
+    return this.getQualifiedFaculties(subjectId).length > 0;
+  }
+
+  hasNoQualifiedFaculties(subjectId: string): boolean {
+    return this.getQualifiedFaculties(subjectId).length === 0;
+  }
+
+  // Get qualified faculties for form dropdown
+  getQualifiedFacultiesForSelectedSubject(): Faculty[] {
+    if (!this.selectedSubjectId) return [];
+    return this.getQualifiedFaculties(this.selectedSubjectId);
+  }
+
+  // Helper method to get lecture count for a specific day
+  getDayLectureCount(dayIndex: number): number {
+    return this.lectureSlots.filter(
+      (slot) => slot.dayOfWeek === dayIndex && slot.isAssigned,
+    ).length;
+  }
+
+  // Track by functions for performance optimization
+  trackByClassId(index: number, classItem: Class): string {
+    return classItem.id;
+  }
+
+  trackByTimeSlot(index: number, timeSlot: TimeSlot): string {
+    return timeSlot.id;
   }
 }

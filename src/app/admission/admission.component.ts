@@ -281,4 +281,21 @@ export class AdmissionComponent implements OnInit {
   isLastStep(): boolean {
     return this.activeIndex === this.steps.length - 1;
   }
+
+  // Helper methods for enhanced UI
+  getStepIcon(): string {
+    const icons = ["user", "flag", "graduation-cap", "users", "file-upload"];
+    return icons[this.activeIndex] || "file";
+  }
+
+  getStepDescription(): string {
+    const descriptions = [
+      "Enter your basic personal information and contact details",
+      "Specify your category, eligibility criteria and course preferences",
+      "Provide details about your educational background and qualifications",
+      "Add information about your parent or guardian",
+      "Upload required documents and complete the declaration",
+    ];
+    return descriptions[this.activeIndex] || "";
+  }
 }

@@ -12,6 +12,7 @@ export interface User {
   id: string;
   firstName: string;
   lastName: string;
+  name: string;
   email: string;
   role: string;
   department?: string;
@@ -45,6 +46,7 @@ export class AuthService {
       id: "1",
       firstName: "John",
       lastName: "Doe",
+      name: "John Doe",
       email: "admin@college.edu",
       role: "admin",
       employeeId: "EMP001",
@@ -55,6 +57,7 @@ export class AuthService {
       id: "2",
       firstName: "Sarah",
       lastName: "Wilson",
+      name: "Sarah Wilson",
       email: "sarah.wilson@college.edu",
       role: "faculty",
       department: "Computer Science",
@@ -66,6 +69,7 @@ export class AuthService {
       id: "3",
       firstName: "Dr. Patricia",
       lastName: "Kumar",
+      name: "Dr. Patricia Kumar",
       email: "patricia.kumar@college.edu",
       role: "hod",
       department: "Computer Science",
@@ -77,6 +81,7 @@ export class AuthService {
       id: "4",
       firstName: "Emily",
       lastName: "Brown",
+      name: "Emily Brown",
       email: "emily.brown@college.edu",
       role: "admission_officer",
       employeeId: "EMP003",
@@ -87,6 +92,7 @@ export class AuthService {
       id: "5",
       firstName: "Michael",
       lastName: "Chen",
+      name: "Michael Chen",
       email: "student@college.edu",
       role: "student",
       employeeId: "STU001",
@@ -98,6 +104,7 @@ export class AuthService {
       id: "6",
       firstName: "Lisa",
       lastName: "Johnson",
+      name: "Lisa Johnson",
       email: "librarian@college.edu",
       role: "librarian",
       employeeId: "LIB001",
@@ -108,6 +115,7 @@ export class AuthService {
       id: "7",
       firstName: "David",
       lastName: "Smith",
+      name: "David Smith",
       email: "assets@college.edu",
       role: "asset_manager",
       employeeId: "AST001",
@@ -204,6 +212,25 @@ export class AuthService {
     localStorage.setItem("current_user", JSON.stringify(user));
     this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
+
+    // Role-based redirect after login
+    this.redirectToRoleDashboard(user.role);
+  }
+
+  private redirectToRoleDashboard(role: string): void {
+    const roleRoutes: { [key: string]: string } = {
+      admin: "/admin",
+      faculty: "/faculty",
+      hod: "/faculty",
+      student: "/dashboard",
+      admission_officer: "/admission-officer",
+      librarian: "/library",
+      asset_manager: "/asset-management",
+      guest: "/admission",
+    };
+
+    const route = roleRoutes[role] || "/dashboard";
+    this.router.navigate([route]);
   }
 
   private checkAuthState(): void {

@@ -37,11 +37,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Check if user is already authenticated
+    // Check if user is already authenticated and redirect if needed
     this.authService.isAuthenticated$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isAuthenticated) => {
         if (isAuthenticated) {
-          this.redirectAfterLogin();
+          // AuthService handles redirect automatically when user logs in
+          // If already authenticated, get current user and redirect to appropriate dashboard
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser) {
+            this.redirectToUserDashboard(currentUser.role);
+          }
         }
       });
 
@@ -82,13 +88,10 @@ export class LoginComponent implements OnInit, OnDestroy {
                 severity: "success",
                 summary: "Login Successful",
                 detail: `Welcome back, ${response.user?.firstName}!`,
-                life: 3000,
+                life: 2000,
               });
 
-              // Redirect based on user role
-              setTimeout(() => {
-                this.redirectBasedOnRole(response.user || null);
-              }, 1000);
+              // AuthService handles redirect automatically
             }
           },
           error: (error) => {
@@ -188,47 +191,20 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-  private redirectAfterLogin(): void {
-    const currentUser = this.authService.getCurrentUser();
-    this.redirectBasedOnRole(currentUser);
-  }
+  private redirectToUserDashboard(role: string): void {
+    const roleRoutes: { [key: string]: string } = {
+      admin: "/admin",
+      faculty: "/faculty",
+      hod: "/faculty",
+      student: "/dashboard",
+      admission_officer: "/admission-officer",
+      librarian: "/library",
+      asset_manager: "/asset-management",
+      guest: "/admission",
+    };
 
-  private redirectBasedOnRole(user: User | null) {
-    try {
-      if (this.returnUrl && this.returnUrl !== "") {
-        // If there's a specific return URL, use it
-        this.router.navigate([this.returnUrl]);
-        return;
-      }
-
-      // Default role-based routing using new UserRole enum
-      const userRole = user?.role as UserRole;
-      switch (userRole) {
-        case UserRole.ADMIN:
-          this.router.navigate(["/admin"]);
-          break;
-        case UserRole.FACULTY:
-        case UserRole.HOD:
-          this.router.navigate(["/faculty"]);
-          break;
-        case UserRole.ADMISSION_OFFICER:
-          this.router.navigate(["/admission-officer"]);
-          break;
-        case UserRole.LIBRARIAN:
-          this.router.navigate(["/library"]);
-          break;
-        case UserRole.ASSET_MANAGER:
-          this.router.navigate(["/asset-management"]);
-          break;
-        case UserRole.STUDENT:
-        default:
-          this.router.navigate(["/dashboard"]);
-      }
-    } catch (error) {
-      console.error("Navigation error:", error);
-      // Fallback navigation
-      this.router.navigate(["/dashboard"]);
-    }
+    const route = roleRoutes[role] || "/dashboard";
+    this.router.navigate([route]);
   }
 
   private markFormGroupTouched() {
