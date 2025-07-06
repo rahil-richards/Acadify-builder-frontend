@@ -9,10 +9,7 @@
       "department": "Computer Science",
       "designation": "Associate Professor",
       "joiningDate": "2020-06-15",
-      "qualifications": [
-        "PhD Computer Science",
-        "M.Tech Software Engineering"
-      ],
+      "qualifications": ["PhD Computer Science", "M.Tech Software Engineering"],
       "avatar": null,
       "isHOD": true
     },
@@ -25,10 +22,7 @@
       "department": "Computer Science",
       "designation": "Assistant Professor",
       "joiningDate": "2019-08-20",
-      "qualifications": [
-        "M.Tech Computer Science",
-        "B.Tech CSE"
-      ],
+      "qualifications": ["M.Tech Computer Science", "B.Tech CSE"],
       "avatar": null,
       "isHOD": false
     },
@@ -41,10 +35,7 @@
       "department": "Computer Science",
       "designation": "Assistant Professor",
       "joiningDate": "2021-03-10",
-      "qualifications": [
-        "PhD Information Technology",
-        "M.Sc Computer Science"
-      ],
+      "qualifications": ["PhD Information Technology", "M.Sc Computer Science"],
       "avatar": null,
       "isHOD": false
     }
@@ -673,9 +664,7 @@
       "approvedBy": "HOD",
       "approvedDate": "2025-07-03T07:28:38.481Z",
       "rejectionReason": null,
-      "documents": [
-        "medical_certificate.pdf"
-      ]
+      "documents": ["medical_certificate.pdf"]
     },
     {
       "id": "leave_003",
@@ -1136,10 +1125,7 @@
           "numberOfInstallments": 2,
           "firstInstallmentAmount": 65000,
           "subsequentInstallmentAmount": 60000,
-          "installmentDates": [
-            "2025-01-15",
-            "2025-06-15"
-          ],
+          "installmentDates": ["2025-01-15", "2025-06-15"],
           "processingFee": 1000
         },
         {
@@ -1218,6 +1204,336 @@
       "leaveDays": 0,
       "attendancePercentage": 96.8,
       "averageWorkingHours": 8.3
+    }
+  ],
+  "feeStructures": [
+    {
+      "id": "fee_struct_001",
+      "course": "B.Pharm",
+      "semester": 1,
+      "academicYear": "2024-25",
+      "tuitionFee": 45000,
+      "libraryFee": 2000,
+      "laboratoryFee": 8000,
+      "developmentFee": 5000,
+      "miscellaneousFee": 2000,
+      "totalFee": 62000,
+      "dueDate": "2025-01-15",
+      "lateFine": 100,
+      "isActive": true
+    },
+    {
+      "id": "fee_struct_002",
+      "course": "B.Pharm",
+      "semester": 2,
+      "academicYear": "2024-25",
+      "tuitionFee": 45000,
+      "libraryFee": 2000,
+      "laboratoryFee": 8000,
+      "developmentFee": 0,
+      "miscellaneousFee": 2000,
+      "totalFee": 57000,
+      "dueDate": "2025-06-15",
+      "lateFine": 100,
+      "isActive": true
+    },
+    {
+      "id": "fee_struct_003",
+      "course": "M.Pharm",
+      "semester": 1,
+      "academicYear": "2024-25",
+      "tuitionFee": 65000,
+      "libraryFee": 3000,
+      "laboratoryFee": 12000,
+      "developmentFee": 8000,
+      "miscellaneousFee": 3000,
+      "totalFee": 91000,
+      "dueDate": "2025-01-15",
+      "lateFine": 150,
+      "isActive": true
+    }
+  ],
+  "studentFees": [
+    {
+      "id": "stud_fee_001",
+      "studentId": "STU001",
+      "studentName": "Raj Kumar",
+      "course": "B.Pharm",
+      "semester": 1,
+      "rollNumber": "BP001",
+      "feeStructureId": "fee_struct_001",
+      "totalAmount": 62000,
+      "paidAmount": 32000,
+      "balanceAmount": 30000,
+      "dueDate": "2025-01-15",
+      "status": "partial",
+      "lastPaymentDate": "2024-12-01",
+      "scholarshipAmount": 0,
+      "discountAmount": 0,
+      "fineAmount": 0
+    },
+    {
+      "id": "stud_fee_002",
+      "studentId": "STU002",
+      "studentName": "Priya Sharma",
+      "course": "B.Pharm",
+      "semester": 1,
+      "rollNumber": "BP002",
+      "feeStructureId": "fee_struct_001",
+      "totalAmount": 62000,
+      "paidAmount": 62000,
+      "balanceAmount": 0,
+      "dueDate": "2025-01-15",
+      "status": "paid",
+      "lastPaymentDate": "2024-11-15",
+      "scholarshipAmount": 10000,
+      "discountAmount": 0,
+      "fineAmount": 0
+    },
+    {
+      "id": "stud_fee_003",
+      "studentId": "STU003",
+      "studentName": "Amit Singh",
+      "course": "B.Pharm",
+      "semester": 2,
+      "rollNumber": "BP003",
+      "feeStructureId": "fee_struct_002",
+      "totalAmount": 57000,
+      "paidAmount": 0,
+      "balanceAmount": 57000,
+      "dueDate": "2025-06-15",
+      "status": "pending",
+      "lastPaymentDate": null,
+      "scholarshipAmount": 0,
+      "discountAmount": 0,
+      "fineAmount": 500
+    },
+    {
+      "id": "stud_fee_004",
+      "studentId": "STU004",
+      "studentName": "Neha Patel",
+      "course": "M.Pharm",
+      "semester": 1,
+      "rollNumber": "MP001",
+      "feeStructureId": "fee_struct_003",
+      "totalAmount": 91000,
+      "paidAmount": 50000,
+      "balanceAmount": 41000,
+      "dueDate": "2025-01-15",
+      "status": "partial",
+      "lastPaymentDate": "2024-12-10",
+      "scholarshipAmount": 15000,
+      "discountAmount": 5000,
+      "fineAmount": 0
+    }
+  ],
+  "feePayments": [
+    {
+      "id": "payment_fee_001",
+      "studentId": "STU001",
+      "studentName": "Raj Kumar",
+      "feeStructureId": "fee_struct_001",
+      "paymentId": "PAY001",
+      "amount": 32000,
+      "paymentMethod": "razorpay",
+      "paymentType": "online",
+      "transactionId": "rzp_001234567890",
+      "paymentDate": "2024-12-01T10:30:00Z",
+      "status": "completed",
+      "receiptNumber": "RCP001",
+      "academicYear": "2024-25",
+      "semester": 1,
+      "description": "Partial fee payment",
+      "processedBy": "system"
+    },
+    {
+      "id": "payment_fee_002",
+      "studentId": "STU002",
+      "studentName": "Priya Sharma",
+      "feeStructureId": "fee_struct_001",
+      "paymentId": "PAY002",
+      "amount": 52000,
+      "paymentMethod": "cash",
+      "paymentType": "offline",
+      "transactionId": "CASH002",
+      "paymentDate": "2024-11-15T14:00:00Z",
+      "status": "completed",
+      "receiptNumber": "RCP002",
+      "academicYear": "2024-25",
+      "semester": 1,
+      "description": "Full fee payment with scholarship",
+      "processedBy": "acc_001"
+    },
+    {
+      "id": "payment_fee_003",
+      "studentId": "STU002",
+      "studentName": "Priya Sharma",
+      "feeStructureId": "fee_struct_001",
+      "paymentId": "PAY003",
+      "amount": 10000,
+      "paymentMethod": "scholarship",
+      "paymentType": "adjustment",
+      "transactionId": "SCH003",
+      "paymentDate": "2024-11-15T14:00:00Z",
+      "status": "completed",
+      "receiptNumber": "RCP003",
+      "academicYear": "2024-25",
+      "semester": 1,
+      "description": "Merit scholarship applied",
+      "processedBy": "acc_001"
+    },
+    {
+      "id": "payment_fee_004",
+      "studentId": "STU004",
+      "studentName": "Neha Patel",
+      "feeStructureId": "fee_struct_003",
+      "paymentId": "PAY004",
+      "amount": 50000,
+      "paymentMethod": "upi",
+      "paymentType": "online",
+      "transactionId": "UPI004567890",
+      "paymentDate": "2024-12-10T16:45:00Z",
+      "status": "completed",
+      "receiptNumber": "RCP004",
+      "academicYear": "2024-25",
+      "semester": 1,
+      "description": "Partial fee payment",
+      "processedBy": "system"
+    }
+  ],
+  "feeReceipts": [
+    {
+      "id": "receipt_001",
+      "receiptNumber": "RCP001",
+      "studentId": "STU001",
+      "studentName": "Raj Kumar",
+      "rollNumber": "BP001",
+      "course": "B.Pharm",
+      "semester": 1,
+      "paymentId": "PAY001",
+      "amount": 32000,
+      "paymentDate": "2024-12-01T10:30:00Z",
+      "paymentMethod": "Online Payment (Razorpay)",
+      "transactionId": "rzp_001234567890",
+      "academicYear": "2024-25",
+      "generatedDate": "2024-12-01T10:30:00Z",
+      "issuedBy": "Oriental College",
+      "description": "Partial fee payment for Semester 1"
+    },
+    {
+      "id": "receipt_002",
+      "receiptNumber": "RCP002",
+      "studentId": "STU002",
+      "studentName": "Priya Sharma",
+      "rollNumber": "BP002",
+      "course": "B.Pharm",
+      "semester": 1,
+      "paymentId": "PAY002",
+      "amount": 52000,
+      "paymentDate": "2024-11-15T14:00:00Z",
+      "paymentMethod": "Cash Payment",
+      "transactionId": "CASH002",
+      "academicYear": "2024-25",
+      "generatedDate": "2024-11-15T14:00:00Z",
+      "issuedBy": "Oriental College",
+      "description": "Full fee payment for Semester 1"
+    }
+  ],
+  "scholarships": [
+    {
+      "id": "scholarship_001",
+      "name": "Merit Scholarship",
+      "type": "merit",
+      "amount": 10000,
+      "percentage": 0,
+      "criteria": "Above 85% in previous exam",
+      "isActive": true,
+      "maxBeneficiaries": 50,
+      "currentBeneficiaries": 12
+    },
+    {
+      "id": "scholarship_002",
+      "name": "Need-based Scholarship",
+      "type": "need_based",
+      "amount": 15000,
+      "percentage": 0,
+      "criteria": "Family income below 2 lakh",
+      "isActive": true,
+      "maxBeneficiaries": 30,
+      "currentBeneficiaries": 8
+    },
+    {
+      "id": "scholarship_003",
+      "name": "Early Bird Discount",
+      "type": "discount",
+      "amount": 0,
+      "percentage": 5,
+      "criteria": "Payment before due date",
+      "isActive": true,
+      "maxBeneficiaries": 0,
+      "currentBeneficiaries": 25
+    }
+  ],
+  "paymentReminders": [
+    {
+      "id": "reminder_001",
+      "studentId": "STU001",
+      "studentName": "Raj Kumar",
+      "dueAmount": 30000,
+      "dueDate": "2025-01-15",
+      "reminderType": "email",
+      "status": "sent",
+      "sentDate": "2024-12-20T09:00:00Z",
+      "message": "Your fee payment of ₹30,000 is due on 15th January 2025"
+    },
+    {
+      "id": "reminder_002",
+      "studentId": "STU003",
+      "studentName": "Amit Singh",
+      "dueAmount": 57500,
+      "dueDate": "2025-06-15",
+      "reminderType": "sms",
+      "status": "pending",
+      "scheduledDate": "2025-01-01T09:00:00Z",
+      "message": "Dear student, your semester fee is pending. Please pay to avoid late fine."
+    }
+  ],
+  "refundRequests": [
+    {
+      "id": "refund_001",
+      "studentId": "STU005",
+      "studentName": "Karan Gupta",
+      "paymentId": "PAY005",
+      "originalAmount": 62000,
+      "refundAmount": 55000,
+      "reason": "Course withdrawal",
+      "requestDate": "2024-12-05T11:00:00Z",
+      "status": "approved",
+      "approvedBy": "admin_001",
+      "approvedDate": "2024-12-07T10:00:00Z",
+      "processedDate": "2024-12-10T15:30:00Z",
+      "refundMethod": "bank_transfer",
+      "bankDetails": {
+        "accountNumber": "1234567890",
+        "ifscCode": "HDFC0001234",
+        "bankName": "HDFC Bank"
+      }
+    }
+  ],
+  "feeReports": [
+    {
+      "id": "report_001",
+      "reportType": "monthly_collection",
+      "month": "December",
+      "year": 2024,
+      "totalCollected": 184000,
+      "totalPending": 128500,
+      "totalStudents": 250,
+      "paidStudents": 156,
+      "pendingStudents": 94,
+      "averagePayment": 1179,
+      "generatedDate": "2024-12-31T23:59:59Z",
+      "generatedBy": "acc_001"
     }
   ]
 }

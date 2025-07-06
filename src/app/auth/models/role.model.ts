@@ -6,6 +6,7 @@ export enum UserRole {
   STUDENT = "student",
   LIBRARIAN = "librarian",
   ASSET_MANAGER = "asset_manager",
+  ACCOUNTANT = "accountant",
   GUEST = "guest",
 }
 
@@ -54,6 +55,17 @@ export enum Permission {
   ASSET_REPORTS = "asset_reports",
   PROCUREMENT = "procurement",
   INVENTORY_MANAGEMENT = "inventory_management",
+
+  // Fee Management permissions
+  MANAGE_FEE_STRUCTURE = "manage_fee_structure",
+  VIEW_FEE_BALANCE = "view_fee_balance",
+  MAKE_PAYMENTS = "make_payments",
+  VIEW_PAYMENT_HISTORY = "view_payment_history",
+  RECORD_CASH_PAYMENTS = "record_cash_payments",
+  MANAGE_SCHOLARSHIPS = "manage_scholarships",
+  MANAGE_REFUNDS = "manage_refunds",
+  GENERATE_FEE_REPORTS = "generate_fee_reports",
+  SEND_PAYMENT_REMINDERS = "send_payment_reminders",
 }
 
 export interface RolePermissions {
@@ -76,8 +88,13 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       Permission.ASSET_REPORTS,
       Permission.PROCUREMENT,
       Permission.INVENTORY_MANAGEMENT,
+      Permission.MANAGE_FEE_STRUCTURE,
+      Permission.MANAGE_SCHOLARSHIPS,
+      Permission.MANAGE_REFUNDS,
+      Permission.GENERATE_FEE_REPORTS,
+      Permission.SEND_PAYMENT_REMINDERS,
     ],
-    routes: ["/admin", "/asset-management", "/dashboard"],
+    routes: ["/admin", "/asset-management", "/fees", "/dashboard"],
     description: "Full system access and administrative privileges",
   },
   {
@@ -132,8 +149,11 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       Permission.VIEW_GRADES,
       Permission.VIEW_ATTENDANCE,
       Permission.SUBMIT_ASSIGNMENTS,
+      Permission.VIEW_FEE_BALANCE,
+      Permission.MAKE_PAYMENTS,
+      Permission.VIEW_PAYMENT_HISTORY,
     ],
-    routes: ["/dashboard", "/admission"],
+    routes: ["/dashboard", "/admission", "/fees"],
     description: "Student portal access and academic information",
   },
   {
@@ -160,6 +180,19 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
     ],
     routes: ["/asset-management", "/dashboard"],
     description: "Asset and inventory management responsibilities",
+  },
+  {
+    role: UserRole.ACCOUNTANT,
+    permissions: [
+      Permission.RECORD_CASH_PAYMENTS,
+      Permission.GENERATE_FEE_REPORTS,
+      Permission.VIEW_PAYMENT_HISTORY,
+      Permission.MANAGE_REFUNDS,
+      Permission.SEND_PAYMENT_REMINDERS,
+      Permission.VIEW_PROFILE,
+    ],
+    routes: ["/fees", "/dashboard"],
+    description: "Fee collection and financial record management",
   },
   {
     role: UserRole.GUEST,

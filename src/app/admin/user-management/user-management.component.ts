@@ -13,6 +13,25 @@ export class UserManagementComponent implements OnInit {
   loading = true;
   showUserForm = false;
   selectedUser: User | null = null;
+  viewMode: "table" | "grid" = "table";
+  selectedRole: string = "";
+  selectedStatus: string = "";
+
+  roleOptions = [
+    { label: "Admin", value: "ADMIN" },
+    { label: "Faculty", value: "FACULTY" },
+    { label: "HOD", value: "HOD" },
+    { label: "Student", value: "STUDENT" },
+    { label: "Admission Officer", value: "ADMISSION_OFFICER" },
+    { label: "Librarian", value: "LIBRARIAN" },
+    { label: "Asset Manager", value: "ASSET_MANAGER" },
+  ];
+
+  statusOptions = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+    { label: "Pending", value: "pending" },
+  ];
 
   constructor(
     private userService: UserService,
@@ -165,5 +184,32 @@ export class UserManagementComponent implements OnInit {
 
   formatDate(date: Date): string {
     return new Date(date).toLocaleDateString();
+  }
+
+  getActiveUsersCount(): number {
+    return this.users.filter((user) => user.status === "active").length;
+  }
+
+  toggleView(): void {
+    this.viewMode = this.viewMode === "table" ? "grid" : "table";
+  }
+
+  onRoleFilter(event: any): void {
+    // Implement role filtering logic
+    console.log("Role filter:", event.value);
+  }
+
+  onStatusFilter(event: any): void {
+    // Implement status filtering logic
+    console.log("Status filter:", event.value);
+  }
+
+  exportUsers(): void {
+    // Implement export functionality
+    console.log("Exporting users...");
+  }
+
+  refreshUsers(): void {
+    this.loadUsers();
   }
 }

@@ -1,0 +1,127 @@
+:host {
+  display: block;
+}
+
+// Custom enhancements for this component
+.beautiful-page {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+// Enhanced table hover effects
+::ng-deep .p-datatable {
+  .p-datatable-tbody > tr {
+    &:hover {
+      background: var(--gray-50);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+// Action button enhancements
+.action-buttons {
+  .p-button {
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Form field spacing
+.form-field {
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Total fee display enhancement
+.total-fee-display {
+  background: linear-gradient(
+    135deg,
+    var(--primary-50) 0%,
+    var(--primary-100) 100%
+  );
+  border: 1px solid var(--primary-200);
+
+  .total-amount {
+    color: var(--primary-700);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+// Empty state enhancement
+.empty-state {
+  .empty-icon {
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .beautiful-container {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .beautiful-header {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .p-button {
+      width: 100%;
+    }
+  }
+}
+
+// Loading state
+.loading-overlay {
+  .p-progress-spinner {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+// Animation keyframes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Focus enhancements
+.form-field {
+  .p-dropdown:focus-within,
+  .p-calendar:focus-within,
+  .p-inputnumber:focus-within {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  }
+}
+
+// Tag custom styling
+::ng-deep .p-tag {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}

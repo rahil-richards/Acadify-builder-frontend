@@ -1,5 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from "@angular/core";
 import { AdminService, DashboardStats } from "../services/admin.service";
+import { MessageService } from "primeng/api";
 
 interface StatCard {
   id: string;
@@ -14,6 +22,8 @@ interface StatCard {
   progress: number;
   progressText: string;
   progressClass: string;
+  cardClass: string;
+  detailRoute: string;
 }
 
 interface QuickAction {
@@ -34,12 +44,31 @@ interface PerformanceMetric {
   description: string;
 }
 
+interface TimePeriod {
+  label: string;
+  value: string;
+}
+
+interface Alert {
+  id: string;
+  message: string;
+  severity: string;
+  icon: string;
+  timestamp: Date;
+}
+
 @Component({
   selector: "app-admin-dashboard",
   templateUrl: "./admin-dashboard.component.html",
   styleUrls: ["./admin-dashboard.component.scss"],
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
+  @ViewChild("userActivityChart")
+  userActivityChart!: ElementRef<HTMLCanvasElement>;
+  @ViewChild("admissionChart") admissionChart!: ElementRef<HTMLCanvasElement>;
+
   stats: DashboardStats = {
     totalUsers: 0,
     activeUsers: 0,
@@ -54,6 +83,29 @@ export class AdminDashboardComponent implements OnInit {
   recentActivities: any[] = [];
   systemHealth: any = {};
   loading = true;
+  showCharts = true;
+
+  // Cache formatted times to prevent ExpressionChangedAfterItHasBeenCheckedError
+  private formattedTimes: Map<number, string> = new Map();
+  private timeUpdateInterval: any;
+
+  // New properties for enhanced dashboard
+  selectedPeriod = "7d";
+  selectedChartPeriod = "30d";
+  activeAlerts: Alert[] = [];
+
+  timePeriods: TimePeriod[] = [
+    { label: "Last 7 Days", value: "7d" },
+    { label: "Last 30 Days", value: "30d" },
+    { label: "Last 3 Months", value: "3m" },
+    { label: "Last Year", value: "1y" },
+  ];
+
+  chartPeriods: TimePeriod[] = [
+    { label: "Last 7 Days", value: "7d" },
+    { label: "Last 30 Days", value: "30d" },
+    { label: "Last 90 Days", value: "90d" },
+  ];
 
   quickActions: QuickAction[] = [
     {
@@ -125,10 +177,30 @@ export class AdminDashboardComponent implements OnInit {
     },
   ];
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private messageService: MessageService,
+  ) {}
 
   ngOnInit() {
     this.loadDashboardData();
+    this.initializeAlerts();
+    this.startTimeUpdateInterval();
+  }
+
+  ngAfterViewInit() {
+    // Initialize charts after view is loaded
+    setTimeout(() => {
+      if (this.showCharts) {
+        this.initializeCharts();
+      }
+    }, 500);
+  }
+
+  ngOnDestroy() {
+    if (this.timeUpdateInterval) {
+      clearInterval(this.timeUpdateInterval);
+    }
   }
 
   loadDashboardData() {
@@ -139,20 +211,28 @@ export class AdminDashboardComponent implements OnInit {
       next: (stats) => {
         this.stats = stats;
         this.loading = false;
+        this.showSuccess("Dashboard data loaded successfully");
       },
       error: (error) => {
         console.error("Error loading stats:", error);
         this.loading = false;
+        this.showError("Failed to load dashboard data");
       },
     });
 
     // Load recent activities
     this.adminService.getRecentActivities().subscribe({
       next: (activities) => {
-        this.recentActivities = activities;
+        this.recentActivities = activities.map((activity) => ({
+          ...activity,
+          user: "Admin User", // Add user info
+          details: this.getActivityDetails(activity.type),
+        }));
+        this.updateFormattedTimes();
       },
       error: (error) => {
         console.error("Error loading activities:", error);
+        this.showError("Failed to load recent activities");
       },
     });
 
@@ -163,6 +243,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error("Error loading system health:", error);
+        this.showError("Failed to load system health data");
       },
     });
   }
@@ -195,6 +276,11 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   formatTimeAgo(date: Date): string {
+    const activityId = date.getTime();
+    return this.formattedTimes.get(activityId) || this.calculateTimeAgo(date);
+  }
+
+  private calculateTimeAgo(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
@@ -241,6 +327,8 @@ export class AdminDashboardComponent implements OnInit {
           0,
         progressText: "Active Rate",
         progressClass: "success",
+        cardClass: "users-card",
+        detailRoute: "/admin/users",
       },
       {
         id: "courses",
@@ -255,6 +343,8 @@ export class AdminDashboardComponent implements OnInit {
         progress: 78,
         progressText: "Completion Rate",
         progressClass: "info",
+        cardClass: "courses-card",
+        detailRoute: "/admin/courses",
       },
       {
         id: "admissions",
@@ -274,6 +364,8 @@ export class AdminDashboardComponent implements OnInit {
           ) || 0,
         progressText: "Pending Rate",
         progressClass: "warning",
+        cardClass: "admissions-card",
+        detailRoute: "/admin/admissions",
       },
       {
         id: "faculty",
@@ -288,6 +380,40 @@ export class AdminDashboardComponent implements OnInit {
         progress: 85,
         progressText: "Capacity",
         progressClass: "success",
+        cardClass: "faculty-card",
+        detailRoute: "/admin/faculty",
+      },
+      {
+        id: "revenue",
+        label: "Monthly Revenue",
+        value: 245000,
+        detail: "₹2.45 Lakhs this month",
+        icon: "pi pi-money-bill",
+        iconClass: "revenue",
+        trend: "+15%",
+        trendIcon: "pi pi-arrow-up",
+        trendClass: "positive",
+        progress: 92,
+        progressText: "Target Achievement",
+        progressClass: "success",
+        cardClass: "revenue-card",
+        detailRoute: "/admin/finance",
+      },
+      {
+        id: "performance",
+        label: "System Performance",
+        value: 98,
+        detail: "98% uptime this month",
+        icon: "pi pi-chart-line",
+        iconClass: "performance",
+        trend: "+2%",
+        trendIcon: "pi pi-arrow-up",
+        trendClass: "positive",
+        progress: 98,
+        progressText: "Uptime",
+        progressClass: "success",
+        cardClass: "performance-card",
+        detailRoute: "/admin/system",
       },
     ];
   }
@@ -301,5 +427,194 @@ export class AdminDashboardComponent implements OnInit {
 
   trackByActionId(index: number, action: QuickAction): string {
     return action.id;
+  }
+
+  // New methods for enhanced dashboard
+  formatNumber(value: number): string {
+    if (value >= 1000) {
+      return (value / 1000).toFixed(1) + "K";
+    }
+    return value.toString();
+  }
+
+  showNotifications() {
+    this.messageService.add({
+      severity: "info",
+      summary: "Notifications",
+      detail: "You have 5 new notifications",
+    });
+  }
+
+  openStatMenu(event: Event, stat: StatCard) {
+    event.stopPropagation();
+    // Implement stat menu logic
+  }
+
+  viewActivityDetails(activity: any) {
+    this.messageService.add({
+      severity: "info",
+      summary: "Activity Details",
+      detail: `Viewing details for: ${activity.message}`,
+    });
+  }
+
+  showActivityFilter() {
+    this.messageService.add({
+      severity: "info",
+      summary: "Filter",
+      detail: "Activity filter opened",
+    });
+  }
+
+  openActivityMenu(event: Event, activity: any) {
+    event.stopPropagation();
+    // Implement activity menu logic
+  }
+
+  openActionMenu(event: Event, action: QuickAction) {
+    event.stopPropagation();
+    // Implement action menu logic
+  }
+
+  getActionStat(actionId: string): string {
+    const statMap: { [key: string]: string } = {
+      users: `${this.stats.totalUsers} total`,
+      courses: `${this.stats.totalCourses} active`,
+      subjects: `${this.stats.totalSubjects} assigned`,
+      reports: "12 generated",
+    };
+    return statMap[actionId] || "";
+  }
+
+  refreshMetrics() {
+    this.loadDashboardData();
+  }
+
+  getActiveAlertsCount(): number {
+    return this.activeAlerts.length;
+  }
+
+  getActiveAlerts(): Alert[] {
+    return this.activeAlerts;
+  }
+
+  dismissAlert(alert: Alert) {
+    this.activeAlerts = this.activeAlerts.filter((a) => a.id !== alert.id);
+    this.showSuccess("Alert dismissed");
+  }
+
+  private initializeAlerts() {
+    this.activeAlerts = [
+      {
+        id: "1",
+        message: "Server backup is overdue",
+        severity: "warning",
+        icon: "pi pi-exclamation-triangle",
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      },
+      {
+        id: "2",
+        message: "High memory usage detected",
+        severity: "danger",
+        icon: "pi pi-exclamation-circle",
+        timestamp: new Date(Date.now() - 30 * 60 * 1000),
+      },
+    ];
+  }
+
+  private getActivityDetails(type: string): string[] {
+    const detailMap: { [key: string]: string[] } = {
+      user_created: ["New account", "Faculty role"],
+      course_updated: ["Curriculum revised", "Syllabus updated"],
+      user_deactivated: ["Account suspended", "Policy violation"],
+      admission_approved: ["Batch approval", "Merit based"],
+      subject_allocated: ["Auto assignment", "Load balancing"],
+    };
+    return detailMap[type] || [];
+  }
+
+  private initializeCharts() {
+    if (this.userActivityChart) {
+      this.createUserActivityChart();
+    }
+    if (this.admissionChart) {
+      this.createAdmissionChart();
+    }
+  }
+
+  private createUserActivityChart() {
+    const ctx = this.userActivityChart.nativeElement.getContext("2d");
+    if (ctx) {
+      // Simple chart creation - in real app, use Chart.js or similar
+      ctx.fillStyle = "#667eea";
+      ctx.fillRect(0, 150, 50, 50);
+      ctx.fillStyle = "#764ba2";
+      ctx.fillRect(60, 100, 50, 100);
+      ctx.fillStyle = "#667eea";
+      ctx.fillRect(120, 80, 50, 120);
+      ctx.fillStyle = "#764ba2";
+      ctx.fillRect(180, 60, 50, 140);
+    }
+  }
+
+  private createAdmissionChart() {
+    const ctx = this.admissionChart.nativeElement.getContext("2d");
+    if (ctx) {
+      // Simple chart creation - in real app, use Chart.js or similar
+      ctx.strokeStyle = "#38a169";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, 150);
+      ctx.lineTo(100, 120);
+      ctx.lineTo(200, 80);
+      ctx.lineTo(350, 50);
+      ctx.stroke();
+
+      ctx.strokeStyle = "#d69e2e";
+      ctx.beginPath();
+      ctx.moveTo(0, 180);
+      ctx.lineTo(100, 160);
+      ctx.lineTo(200, 140);
+      ctx.lineTo(350, 130);
+      ctx.stroke();
+    }
+  }
+
+  private showSuccess(message: string) {
+    this.messageService.add({
+      severity: "success",
+      summary: "Success",
+      detail: message,
+    });
+  }
+
+  private showError(message: string) {
+    this.messageService.add({
+      severity: "error",
+      summary: "Error",
+      detail: message,
+    });
+  }
+
+  // New methods for the updated dashboard
+  generateReport() {
+    this.showSuccess("Report generation started");
+    // Implement report generation logic
+  }
+
+  private startTimeUpdateInterval() {
+    // Update formatted times every minute to keep them current
+    this.timeUpdateInterval = setInterval(() => {
+      this.updateFormattedTimes();
+    }, 60000); // Update every minute
+  }
+
+  private updateFormattedTimes() {
+    this.formattedTimes.clear();
+    this.recentActivities.forEach((activity) => {
+      const activityId = activity.timestamp.getTime();
+      const formattedTime = this.calculateTimeAgo(activity.timestamp);
+      this.formattedTimes.set(activityId, formattedTime);
+    });
   }
 }

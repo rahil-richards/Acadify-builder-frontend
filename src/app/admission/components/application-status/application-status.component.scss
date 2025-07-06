@@ -1,45 +1,45 @@
 .application-status-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-  padding: 2rem;
+  padding: 1.5rem;
 
   @media (max-width: 768px) {
     padding: 1rem;
   }
 }
 
-// Modern Header
+// Compact Header
 .status-header {
   max-width: 1200px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 2rem auto;
 
   .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: white;
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(135, 206, 235, 0.1);
-    border: 1px solid rgba(135, 206, 235, 0.2);
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(135, 206, 235, 0.08);
+    border: 1px solid rgba(135, 206, 235, 0.15);
 
     .header-main {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
 
       .icon-container {
-        width: 60px;
-        height: 60px;
+        width: 48px;
+        height: 48px;
         background: linear-gradient(135deg, #87ceeb, #4682b4);
-        border-radius: 50%;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 20px rgba(135, 206, 235, 0.3);
+        box-shadow: 0 2px 12px rgba(135, 206, 235, 0.2);
 
         i {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           color: white;
         }
       }
@@ -47,15 +47,15 @@
       .header-text {
         h1 {
           margin: 0;
-          font-size: 2rem;
-          font-weight: 700;
+          font-size: 1.5rem;
+          font-weight: 600;
           color: #2c3e50;
-          letter-spacing: -0.5px;
+          letter-spacing: -0.3px;
         }
 
         .subtitle {
-          margin: 0.5rem 0 0 0;
-          font-size: 1rem;
+          margin: 0.25rem 0 0 0;
+          font-size: 0.9rem;
           color: #87ceeb;
           font-weight: 500;
         }

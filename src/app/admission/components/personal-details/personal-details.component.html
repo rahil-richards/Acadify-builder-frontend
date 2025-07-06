@@ -4,7 +4,9 @@
     <h4>Basic Information</h4>
     <div class="form-grid">
       <div class="form-field">
-        <label for="lastName">Last Name *</label>
+        <label for="lastName"
+          >Last Name <span class="required-asterisk">*</span></label
+        >
         <input
           pInputText
           id="lastName"
@@ -17,7 +19,9 @@
       </div>
 
       <div class="form-field">
-        <label for="firstName">First Name *</label>
+        <label for="firstName"
+          >First Name <span class="required-asterisk">*</span></label
+        >
         <input
           pInputText
           id="firstName"
@@ -30,7 +34,9 @@
       </div>
 
       <div class="form-field">
-        <label for="fatherHusbandName">Father/Husband's Name *</label>
+        <label for="fatherHusbandName"
+          >Father/Husband's Name <span class="required-asterisk">*</span></label
+        >
         <input
           pInputText
           id="fatherHusbandName"
@@ -46,7 +52,9 @@
       </div>
 
       <div class="form-field">
-        <label for="dateOfBirth">Date of Birth *</label>
+        <label for="dateOfBirth"
+          >Date of Birth <span class="required-asterisk">*</span></label
+        >
         <p-calendar
           inputId="dateOfBirth"
           formControlName="dateOfBirth"
@@ -73,7 +81,7 @@
       </div>
 
       <div class="form-field">
-        <label>Gender *</label>
+        <label>Gender <span class="required-asterisk">*</span></label>
         <div class="radio-group">
           <div *ngFor="let gender of genders" class="radio-item">
             <p-radioButton

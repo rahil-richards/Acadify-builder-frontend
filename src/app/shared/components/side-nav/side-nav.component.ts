@@ -322,6 +322,88 @@ export class SideNavComponent implements OnInit, OnDestroy {
       });
     }
 
+    // Fee Management sections
+    if (this.hasRole([UserRole.ADMIN])) {
+      this.menuSections.push({
+        label: "Fee Management (Admin)",
+        items: [
+          {
+            label: "Fee Structure",
+            icon: "pi pi-list",
+            route: "/fees/admin/structure",
+          },
+          {
+            label: "Fee Reports",
+            icon: "pi pi-chart-bar",
+            route: "/fees/admin/reports",
+          },
+          {
+            label: "Scholarships",
+            icon: "pi pi-star",
+            route: "/fees/admin/scholarships",
+          },
+          {
+            label: "Refund Management",
+            icon: "pi pi-undo",
+            route: "/fees/admin/refunds",
+          },
+          {
+            label: "Payment Reminders",
+            icon: "pi pi-bell",
+            route: "/fees/admin/reminders",
+          },
+          {
+            label: "Cash Payments",
+            icon: "pi pi-money-bill",
+            route: "/fees/accounting/cash-payments",
+          },
+        ],
+      });
+    }
+
+    // Fee Management for Students
+    if (this.hasRole([UserRole.STUDENT])) {
+      this.menuSections.push({
+        label: "Fee Management",
+        items: [
+          {
+            label: "Fee Balance",
+            icon: "pi pi-wallet",
+            route: "/fees/balance",
+          },
+          {
+            label: "Make Payment",
+            icon: "pi pi-credit-card",
+            route: "/fees/payment",
+          },
+          {
+            label: "Payment History",
+            icon: "pi pi-history",
+            route: "/fees/history",
+          },
+        ],
+      });
+    }
+
+    // Fee Management for Accountants
+    if (this.hasRole([UserRole.ACCOUNTANT])) {
+      this.menuSections.push({
+        label: "Fee Management",
+        items: [
+          {
+            label: "Cash Payments",
+            icon: "pi pi-money-bill",
+            route: "/fees/accounting/cash-payments",
+          },
+          {
+            label: "Fee Reports",
+            icon: "pi pi-chart-bar",
+            route: "/fees/admin/reports",
+          },
+        ],
+      });
+    }
+
     // Account section (only for authenticated users)
     if (this.currentUser && this.isAuthenticated()) {
       this.menuSections.push({
@@ -412,6 +494,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
       [UserRole.ADMISSION_OFFICER]: "Admission Dashboard",
       [UserRole.LIBRARIAN]: "Library Dashboard",
       [UserRole.ASSET_MANAGER]: "Asset Dashboard",
+      [UserRole.ACCOUNTANT]: "Accounting Dashboard",
       [UserRole.GUEST]: "Guest Portal",
     };
 
@@ -429,6 +512,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
       [UserRole.ADMISSION_OFFICER]: "/admission-officer",
       [UserRole.LIBRARIAN]: "/library",
       [UserRole.ASSET_MANAGER]: "/asset-management",
+      [UserRole.ACCOUNTANT]: "/fees",
       [UserRole.GUEST]: "/admission",
     };
 
@@ -446,6 +530,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
       [UserRole.ADMISSION_OFFICER]: "Admission Officer",
       [UserRole.LIBRARIAN]: "Librarian",
       [UserRole.ASSET_MANAGER]: "Asset Manager",
+      [UserRole.ACCOUNTANT]: "Accountant",
       [UserRole.GUEST]: "Guest",
     };
 

@@ -1,0 +1,274 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// Enhanced Progress Bar Styles
+::ng-deep .p-progressbar {
+  border-radius: 1rem;
+  background-color: #e5e7eb;
+  overflow: hidden;
+
+  .p-progressbar-value {
+    border-radius: 1rem;
+    transition: width 0.6s ease-in-out;
+  }
+
+  &.progress-success .p-progressbar-value {
+    background: linear-gradient(90deg, #10b981, #059669);
+  }
+
+  &.progress-warning .p-progressbar-value {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+}
+
+// Custom Button Styles
+.p-button-primary {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  border: none;
+
+  &:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.p-button-outlined {
+  border: 2px solid #1d4ed8;
+  color: #1d4ed8;
+
+  &:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 78, 216, 0.3);
+  }
+}
+
+// Card Hover Effects
+.bg-white\/80 {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Progress Spinner
+::ng-deep .p-progress-spinner {
+  .p-progress-spinner-svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .p-progress-spinner-circle {
+    stroke: #1d4ed8;
+    stroke-width: 3;
+  }
+}
+
+// Tag Styles
+::ng-deep .p-tag {
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+
+  &.p-tag-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+
+  &.p-tag-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+
+  &.p-tag-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+}
+
+// Accordion Enhancements
+::ng-deep .p-accordion {
+  .p-accordion-header {
+    border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    .p-accordion-header-link {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        transform: translateY(-1px);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.2);
+      }
+    }
+  }
+
+  .p-accordion-content {
+    border: none;
+    background: transparent;
+    padding: 1rem 0;
+  }
+}
+
+// Animation Classes
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Status Indicators
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.overdue {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+
+  &.due-soon {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  &.paid {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .grid {
+    &.grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+
+    &.grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+
+    &.grid-cols-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .flex {
+    &.lg\\:flex-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .p-6 {
+    padding: 1rem;
+  }
+
+  .grid {
+    &.grid-cols-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Loading States
+.loading-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+
+  &:hover {
+    background: #a8a8a8;
+  }
+}
+
+// Utility Classes
+.text-overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.backdrop-blur-custom {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}

@@ -2,7 +2,7 @@
 .admission-stepper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
   min-height: 100vh;
 
   .form-header {
@@ -162,38 +162,18 @@
 /* Responsive adjustments for tablets */
 @media screen and (max-width: 768px) {
   .admission-stepper {
-    padding: 1.5rem 0.75rem;
-
-    .stepper-header {
-      padding: 1.5rem 0 2.5rem 0;
-    }
+    padding: 1rem 0.75rem;
 
     .step-content {
       h2 {
-        font-size: 1.35rem;
-        margin-bottom: 2.5rem;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
       }
     }
 
     .step-actions {
-      margin-top: 3rem;
-      padding: 1.5rem 0;
-      flex-direction: column;
-      gap: 1rem;
-
-      .next-actions {
-        width: 100%;
-        justify-content: center;
-      }
-
-      :host ::ng-deep p-button {
-        width: 100%;
-
-        button {
-          width: 100%;
-          justify-content: center;
-        }
-      }
+      margin-top: 2rem;
+      padding: 1rem 0;
     }
   }
 }
@@ -201,31 +181,43 @@
 /* Responsive stepper for mobile */
 @media screen and (max-width: 600px) {
   .admission-stepper {
-    padding: 1rem 0.5rem;
-
-    .stepper-header {
-      padding: 1rem 0 2rem 0;
-    }
+    padding: 0.75rem 0.5rem;
 
     .step-content {
       h2 {
-        font-size: 1.25rem;
-        margin-bottom: 2rem;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
       }
     }
 
     .step-actions {
-      margin-top: 2.5rem;
-      padding: 1rem 0;
+      margin-top: 1.5rem;
+      padding: 0.75rem 0;
+    }
+
+    .form-header {
+      margin-bottom: 1rem;
+
+      .relative {
+        padding: 1rem !important;
+      }
+
+      h1 {
+        font-size: 1.125rem !important;
+      }
+
+      .hidden {
+        display: none !important;
+      }
     }
   }
 
-  :host ::ng-deep .custom-steps.p-steps .p-steps-item .p-menuitem-link {
+  :host ::ng-deep .modern-steps.p-steps .p-steps-item .p-menuitem-link {
     padding: 0.5rem;
   }
 
-  :host ::ng-deep .custom-steps.p-steps .p-steps-item .p-steps-title {
-    font-size: 0.875rem;
+  :host ::ng-deep .modern-steps.p-steps .p-steps-item .p-steps-title {
+    font-size: 0.75rem;
   }
 }
 
