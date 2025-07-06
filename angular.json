@@ -65,7 +65,7 @@
             "port": 4200,
             "host": "0.0.0.0",
             "proxyConfig": "proxy.conf.json",
-            "allowedHosts": "all",
+            "allowedHosts": ["all"],
             "liveReload": true,
             "hmr": false,
             "buildTarget": "oriental-college-admission:build:development"
