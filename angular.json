@@ -62,20 +62,20 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "oriental-college-admission:build:development",
             "port": 4200,
             "host": "0.0.0.0",
             "proxyConfig": "proxy.conf.json",
             "disableHostCheck": true,
             "liveReload": true,
-            "hmr": false
+            "hmr": false,
+            "buildTarget": "oriental-college-admission:build:development"
           },
           "configurations": {
             "production": {
-              "browserTarget": "oriental-college-admission:build:production"
+              "buildTarget": "oriental-college-admission:build:production"
             },
             "development": {
-              "browserTarget": "oriental-college-admission:build:development"
+              "buildTarget": "oriental-college-admission:build:development"
             }
           },
           "defaultConfiguration": "development"
