@@ -1,0 +1,544 @@
+<div class="beautiful-page">
+  <!-- Header Section -->
+  <div class="beautiful-header">
+    <div class="beautiful-header-content">
+      <div class="beautiful-header-text">
+        <h1>Cash Payments</h1>
+        <p>Record and manage cash fee payments</p>
+      </div>
+      <div class="beautiful-header-icon">
+        <i class="pi pi-money-bill"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="beautiful-container">
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <!-- Today's Collection -->
+      <div class="beautiful-card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Today's Collection</p>
+            <p class="text-2xl font-bold text-green-600">
+              {{ formatCurrency(todayCollection) }}
+            </p>
+          </div>
+          <div
+            class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"
+          >
+            <i class="pi pi-calendar text-green-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Collection -->
+      <div class="beautiful-card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Weekly Collection</p>
+            <p class="text-2xl font-bold text-blue-600">
+              {{ formatCurrency(weeklyCollection) }}
+            </p>
+          </div>
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+          >
+            <i class="pi pi-chart-line text-blue-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Collection -->
+      <div class="beautiful-card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Monthly Collection</p>
+            <p class="text-2xl font-bold text-purple-600">
+              {{ formatCurrency(monthlyCollection) }}
+            </p>
+          </div>
+          <div
+            class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center"
+          >
+            <i class="pi pi-calendar-times text-purple-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Cash Payments -->
+      <div class="beautiful-card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Total Payments</p>
+            <p class="text-2xl font-bold text-orange-600">
+              {{ totalCashPayments }}
+            </p>
+          </div>
+          <div
+            class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center"
+          >
+            <i class="pi pi-list text-orange-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="beautiful-card p-6 mb-8">
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        <h2 class="text-2xl font-semibold text-gray-800">
+          Recent Cash Payments
+        </h2>
+        <div class="flex flex-wrap gap-3">
+          <button
+            pButton
+            type="button"
+            label="Record Payment"
+            icon="pi pi-plus"
+            class="p-button-primary p-button-raised"
+            (click)="openNewPaymentDialog()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Export Report"
+            icon="pi pi-download"
+            class="p-button-outlined p-button-primary"
+            (click)="exportDailyReport()"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Search Section -->
+    <div
+      class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 p-6 mb-8"
+    >
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Search Students</h3>
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <input
+            pInputText
+            placeholder="Search by name, roll number, or student ID"
+            class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+            (input)="searchStudent($event.target?.value || '')"
+          />
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div *ngIf="studentFees.length > 0" class="mt-6">
+        <h4 class="font-semibold text-gray-800 mb-3">Search Results</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            *ngFor="let student of studentFees"
+            class="p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all duration-300"
+            (click)="selectStudent(student)"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <h5 class="font-semibold text-gray-800">
+                  {{ student.studentName }}
+                </h5>
+                <p class="text-sm text-gray-600">
+                  {{ student.rollNumber }} | {{ student.course }}
+                </p>
+                <p class="text-sm text-gray-600">
+                  Semester {{ student.semester }}
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold text-red-600">
+                  {{ formatCurrency(student.balanceAmount) }}
+                </p>
+                <p class="text-xs text-gray-500">Outstanding</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Loading -->
+      <div *ngIf="searchLoading" class="mt-6 text-center">
+        <p-progressSpinner styleClass="w-8 h-8"></p-progressSpinner>
+        <p class="text-gray-600 mt-2">Searching students...</p>
+      </div>
+    </div>
+
+    <!-- Recent Payments Table -->
+    <div
+      class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 overflow-hidden"
+    >
+      <p-table
+        [value]="recentPayments"
+        [loading]="loading"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        styleClass="p-datatable-lg"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-left">Receipt No.</th>
+            <th class="text-left">Student Details</th>
+            <th class="text-right">Amount</th>
+            <th class="text-center">Date & Time</th>
+            <th class="text-center">Collected By</th>
+            <th class="text-center">Status</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-payment>
+          <tr>
+            <td>
+              <div
+                class="font-mono text-sm bg-gray-100 px-2 py-1 rounded inline-block"
+              >
+                {{ payment.receiptNumber }}
+              </div>
+            </td>
+            <td>
+              <div>
+                <p class="font-semibold text-gray-800">
+                  {{ payment.studentName }}
+                </p>
+                <p class="text-sm text-gray-600">{{ payment.description }}</p>
+              </div>
+            </td>
+            <td class="text-right">
+              <p class="text-lg font-bold text-green-600">
+                {{ formatCurrency(payment.amount) }}
+              </p>
+            </td>
+            <td class="text-center">
+              <p class="text-sm">{{ formatDate(payment.paymentDate) }}</p>
+            </td>
+            <td class="text-center">
+              <p class="text-sm font-medium">{{ payment.processedBy }}</p>
+            </td>
+            <td class="text-center">
+              <p-tag
+                [value]="payment.status"
+                [severity]="getStatusSeverity(payment.status)"
+              >
+              </p-tag>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center py-8">
+              <div class="flex flex-col items-center">
+                <i class="pi pi-money-bill text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg">
+                  No cash payments recorded today
+                </p>
+                <p class="text-gray-400 text-sm">
+                  Start recording cash payments to see them here
+                </p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!-- Cash Payment Dialog -->
+<p-dialog
+  header="Record Cash Payment"
+  [(visible)]="displayDialog"
+  [style]="{ width: '800px' }"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-dialog-header-primary"
+>
+  <form [formGroup]="cashPaymentForm" (ngSubmit)="recordCashPayment()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Student ID -->
+      <div class="form-group">
+        <label
+          for="studentId"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Student ID <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="studentId"
+          formControlName="studentId"
+          placeholder="Enter Student ID"
+          class="w-full"
+          [class.border-red-500]="isFieldInvalid('studentId')"
+        />
+        <small
+          *ngIf="isFieldInvalid('studentId')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("studentId") }}
+        </small>
+      </div>
+
+      <!-- Student Name -->
+      <div class="form-group">
+        <label
+          for="studentName"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Student Name <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="studentName"
+          formControlName="studentName"
+          placeholder="Enter Student Name"
+          class="w-full"
+          [class.border-red-500]="isFieldInvalid('studentName')"
+        />
+        <small
+          *ngIf="isFieldInvalid('studentName')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("studentName") }}
+        </small>
+      </div>
+
+      <!-- Roll Number -->
+      <div class="form-group">
+        <label
+          for="rollNumber"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Roll Number <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="rollNumber"
+          formControlName="rollNumber"
+          placeholder="Enter Roll Number"
+          class="w-full"
+          [class.border-red-500]="isFieldInvalid('rollNumber')"
+        />
+        <small
+          *ngIf="isFieldInvalid('rollNumber')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("rollNumber") }}
+        </small>
+      </div>
+
+      <!-- Course -->
+      <div class="form-group">
+        <label
+          for="course"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Course <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="course"
+          formControlName="course"
+          placeholder="Enter Course"
+          class="w-full"
+          [class.border-red-500]="isFieldInvalid('course')"
+        />
+        <small *ngIf="isFieldInvalid('course')" class="text-red-500 mt-1 block">
+          {{ getFieldError("course") }}
+        </small>
+      </div>
+
+      <!-- Semester -->
+      <div class="form-group">
+        <label
+          for="semester"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Semester <span class="text-red-500">*</span>
+        </label>
+        <p-inputNumber
+          id="semester"
+          formControlName="semester"
+          [min]="1"
+          [max]="8"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+        <small
+          *ngIf="isFieldInvalid('semester')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("semester") }}
+        </small>
+      </div>
+
+      <!-- Amount -->
+      <div class="form-group">
+        <label
+          for="amount"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Payment Amount <span class="text-red-500">*</span>
+        </label>
+        <p-inputNumber
+          id="amount"
+          formControlName="amount"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          [min]="1"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+        <small *ngIf="isFieldInvalid('amount')" class="text-red-500 mt-1 block">
+          {{ getFieldError("amount") }}
+        </small>
+      </div>
+
+      <!-- Receipt Number -->
+      <div class="form-group">
+        <label
+          for="receiptNumber"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Receipt Number <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="receiptNumber"
+          formControlName="receiptNumber"
+          placeholder="Auto-generated"
+          class="w-full font-mono"
+          [class.border-red-500]="isFieldInvalid('receiptNumber')"
+        />
+        <small
+          *ngIf="isFieldInvalid('receiptNumber')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("receiptNumber") }}
+        </small>
+      </div>
+
+      <!-- Payment Date -->
+      <div class="form-group">
+        <label
+          for="paymentDate"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Payment Date <span class="text-red-500">*</span>
+        </label>
+        <p-calendar
+          id="paymentDate"
+          formControlName="paymentDate"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="Select Date"
+          styleClass="w-full"
+        >
+        </p-calendar>
+      </div>
+
+      <!-- Collected By -->
+      <div class="form-group">
+        <label
+          for="collectedBy"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Collected By <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="collectedBy"
+          formControlName="collectedBy"
+          placeholder="Enter Collector Name"
+          class="w-full"
+          [class.border-red-500]="isFieldInvalid('collectedBy')"
+        />
+        <small
+          *ngIf="isFieldInvalid('collectedBy')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("collectedBy") }}
+        </small>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group md:col-span-2">
+        <label
+          for="description"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Description <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="description"
+          formControlName="description"
+          placeholder="Enter Payment Description"
+          class="w-full"
+          [class.border-red-500]="isFieldInvalid('description')"
+        />
+        <small
+          *ngIf="isFieldInvalid('description')"
+          class="text-red-500 mt-1 block"
+        >
+          {{ getFieldError("description") }}
+        </small>
+      </div>
+
+      <!-- Remarks -->
+      <div class="form-group md:col-span-2">
+        <label
+          for="remarks"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+        >
+          Remarks (Optional)
+        </label>
+        <textarea
+          pInputTextarea
+          id="remarks"
+          formControlName="remarks"
+          placeholder="Enter any additional remarks"
+          rows="3"
+          class="w-full"
+        >
+        </textarea>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end space-x-3">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="displayDialog = false"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Record Payment"
+        icon="pi pi-check"
+        class="p-button-primary"
+        [disabled]="!cashPaymentForm.valid || loading"
+        [loading]="loading"
+        (click)="recordCashPayment()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast Messages -->
+<p-toast></p-toast>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog></p-confirmDialog>

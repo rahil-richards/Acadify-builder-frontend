@@ -1,169 +1,578 @@
-<div class="user-management">
-  <div class="page-header">
-    <h1>User Management</h1>
-    <p>Manage system users, roles, and permissions</p>
+<!-- Modern User Management Page -->
+<div
+  class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50"
+>
+  <!-- Modern Header with Gradient -->
+  <div
+    class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl shadow-2xl mx-4 lg:mx-6 mt-4 lg:mt-6 mb-6 lg:mb-8 overflow-hidden relative"
+  >
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-white/5 opacity-20">
+      <div
+        class="absolute inset-0"
+        style="
+          background-image:
+            radial-gradient(
+              circle at 20% 50%,
+              rgba(255, 255, 255, 0.1) 2px,
+              transparent 2px
+            ),
+            radial-gradient(
+              circle at 80% 50%,
+              rgba(255, 255, 255, 0.1) 2px,
+              transparent 2px
+            );
+          background-size: 60px 60px;
+        "
+      ></div>
+    </div>
+
+    <div class="relative p-6 lg:p-8">
+      <div
+        class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6"
+      >
+        <div class="flex-1">
+          <div class="mb-4">
+            <h1
+              class="text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent"
+            >
+              User Management
+            </h1>
+            <p
+              class="text-indigo-100 text-base lg:text-lg mb-4 leading-relaxed max-w-2xl"
+            >
+              Manage system users, roles, and permissions across Oriental
+              College
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm border border-white/20"
+            >
+              <i class="pi pi-users mr-2 text-sm"></i>
+              {{ users?.length || 0 }} Total Users
+            </span>
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm border border-white/20"
+            >
+              <i class="pi pi-check-circle mr-2 text-sm"></i>
+              {{ getActiveUsersCount() }} Active
+            </span>
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-emerald-500/30 backdrop-blur-sm border border-emerald-400/30"
+            >
+              <i class="pi pi-shield mr-2 text-sm"></i>
+              Role-Based Access
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row xl:flex-col gap-3 min-w-fit">
+          <button
+            (click)="onAddUser()"
+            [disabled]="loading"
+            class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 font-medium"
+          >
+            <i class="pi pi-plus text-lg"></i>
+            <span>Add New User</span>
+          </button>
+          <div class="flex gap-3">
+            <button
+              (click)="exportUsers()"
+              class="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/20 text-white px-5 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 hover:shadow-lg font-medium"
+            >
+              <i class="pi pi-download text-sm"></i>
+              <span>Export</span>
+            </button>
+            <button
+              (click)="refreshUsers()"
+              [disabled]="loading"
+              class="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/20 text-white px-5 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 disabled:opacity-50 hover:shadow-lg font-medium"
+            >
+              <i
+                class="pi pi-refresh text-sm"
+                [class.animate-spin]="loading"
+              ></i>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <p-card>
-    <p-toolbar>
-      <div class="p-toolbar-group-start">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-            placeholder="Search users..."
-            class="p-inputtext-sm"
-          />
-        </span>
-      </div>
-      <div class="p-toolbar-group-end">
-        <p-button
-          label="Add User"
-          icon="pi pi-plus"
-          (onClick)="onAddUser()"
-          styleClass="p-button-sm"
-        ></p-button>
-      </div>
-    </p-toolbar>
+  <!-- Loading State -->
+  <div
+    *ngIf="loading"
+    class="flex items-center justify-center min-h-[400px] mx-6"
+  >
+    <div class="text-center">
+      <div
+        class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+      ></div>
+      <p class="text-gray-600 font-medium">Loading users...</p>
+    </div>
+  </div>
 
-    <p-table
-      [value]="users"
-      [loading]="loading"
-      [globalFilterFields]="['firstName', 'lastName', 'email', 'role']"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[5, 10, 20]"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      styleClass="p-datatable-striped"
-      responsiveLayout="scroll"
-      #dt
+  <!-- Main Content -->
+  <div *ngIf="!loading" class="px-4 lg:px-6">
+    <!-- Search and Filter Toolbar -->
+    <div
+      class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 p-6 mb-6"
     >
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="firstName">
-            Name <p-sortIcon field="firstName"></p-sortIcon>
-          </th>
-          <th pSortableColumn="email">
-            Email <p-sortIcon field="email"></p-sortIcon>
-          </th>
-          <th pSortableColumn="role">
-            Role <p-sortIcon field="role"></p-sortIcon>
-          </th>
-          <th pSortableColumn="status">
-            Status <p-sortIcon field="status"></p-sortIcon>
-          </th>
-          <th pSortableColumn="createdDate">
-            Created <p-sortIcon field="createdDate"></p-sortIcon>
-          </th>
-          <th pSortableColumn="lastLogin">
-            Last Login <p-sortIcon field="lastLogin"></p-sortIcon>
-          </th>
-          <th>Actions</th>
-        </tr>
-      </ng-template>
+      <div
+        class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center"
+      >
+        <div class="flex flex-col sm:flex-row gap-4 flex-1">
+          <!-- Search Input -->
+          <div class="relative flex-1 max-w-md">
+            <i
+              class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              placeholder="Search users by name, email, or role..."
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
 
-      <ng-template pTemplate="body" let-user>
-        <tr>
-          <td>
-            <div class="user-info">
-              <div class="user-avatar">
+          <!-- Role Filter -->
+          <p-dropdown
+            [options]="roleOptions"
+            [(ngModel)]="selectedRole"
+            (onChange)="onRoleFilter($event)"
+            placeholder="Filter by Role"
+            [showClear]="true"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="role-filter-dropdown"
+          ></p-dropdown>
+
+          <!-- Status Filter -->
+          <p-dropdown
+            [options]="statusOptions"
+            [(ngModel)]="selectedStatus"
+            (onChange)="onStatusFilter($event)"
+            placeholder="Filter by Status"
+            [showClear]="true"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="status-filter-dropdown"
+          ></p-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div
+      class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 overflow-hidden"
+    >
+      <!-- Table Header -->
+      <div
+        class="bg-gradient-to-r from-slate-50 via-blue-50 to-indigo-50 px-6 py-5 border-b border-gray-200/60"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
+          <div>
+            <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-2">
+              User Directory
+            </h3>
+            <div class="flex items-center gap-2 text-blue-600">
+              <i class="pi pi-users text-sm"></i>
+              <span class="font-medium">{{ users?.length || 0 }} Users</span>
+              <span
+                class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium"
+              >
+                {{ getActiveUsersCount() }} Active
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              (click)="toggleView()"
+              class="px-4 py-2 bg-white/80 text-gray-700 rounded-lg hover:bg-white border border-gray-200 transition-all duration-200 flex items-center gap-2 font-medium"
+            >
+              <i
+                class="pi"
+                [class.pi-th-large]="viewMode === 'table'"
+                [class.pi-list]="viewMode === 'grid'"
+              ></i>
+              <span>{{
+                viewMode === "table" ? "Grid View" : "Table View"
+              }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table View -->
+      <div *ngIf="viewMode === 'table'" class="overflow-x-auto">
+        <p-table
+          [value]="users"
+          [globalFilterFields]="['firstName', 'lastName', 'email', 'role']"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[5, 10, 20, 50]"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+          styleClass="modern-table"
+          responsiveLayout="scroll"
+          #dt
+        >
+          <ng-template pTemplate="header">
+            <tr class="bg-white">
+              <th
+                pSortableColumn="firstName"
+                class="text-left py-4 px-6 font-semibold text-gray-700 border-b border-gray-200"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-user text-blue-600"></i>
+                  Name
+                  <p-sortIcon field="firstName"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                pSortableColumn="email"
+                class="text-left py-4 px-6 font-semibold text-gray-700 border-b border-gray-200"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-envelope text-blue-600"></i>
+                  Contact
+                  <p-sortIcon field="email"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                pSortableColumn="role"
+                class="text-left py-4 px-6 font-semibold text-gray-700 border-b border-gray-200"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-users text-blue-600"></i>
+                  Role
+                  <p-sortIcon field="role"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                pSortableColumn="status"
+                class="text-left py-4 px-6 font-semibold text-gray-700 border-b border-gray-200"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-circle text-blue-600"></i>
+                  Status
+                  <p-sortIcon field="status"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                pSortableColumn="lastLogin"
+                class="text-left py-4 px-6 font-semibold text-gray-700 border-b border-gray-200"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-clock text-blue-600"></i>
+                  Last Login
+                  <p-sortIcon field="lastLogin"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                class="text-center py-4 px-6 font-semibold text-gray-700 border-b border-gray-200"
+              >
+                <i class="pi pi-cog text-blue-600"></i>
+                Actions
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-user>
+            <tr
+              class="hover:bg-gray-50 transition-colors border-b border-gray-100"
+            >
+              <td class="py-4 px-6">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+                  >
+                    {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="font-semibold text-gray-900">
+                      {{ user.firstName }} {{ user.lastName }}
+                    </div>
+                    <div
+                      class="text-sm text-gray-600"
+                      *ngIf="user.employeeId || user.studentId"
+                    >
+                      ID: {{ user.employeeId || user.studentId }}
+                    </div>
+                    <div
+                      class="text-xs text-blue-600 font-medium"
+                      *ngIf="user.department"
+                    >
+                      {{ user.department }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-6">
+                <div>
+                  <div class="font-medium text-gray-900">{{ user.email }}</div>
+                  <div class="text-sm text-gray-600" *ngIf="user.phone">
+                    {{ user.phone }}
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-6">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [class.bg-red-100]="user.role === 'ADMIN'"
+                  [class.text-red-800]="user.role === 'ADMIN'"
+                  [class.bg-blue-100]="
+                    user.role === 'FACULTY' || user.role === 'HOD'
+                  "
+                  [class.text-blue-800]="
+                    user.role === 'FACULTY' || user.role === 'HOD'
+                  "
+                  [class.bg-green-100]="user.role === 'STUDENT'"
+                  [class.text-green-800]="user.role === 'STUDENT'"
+                  [class.bg-yellow-100]="user.role === 'ADMISSION_OFFICER'"
+                  [class.text-yellow-800]="user.role === 'ADMISSION_OFFICER'"
+                  [class.bg-purple-100]="user.role === 'LIBRARIAN'"
+                  [class.text-purple-800]="user.role === 'LIBRARIAN'"
+                  [class.bg-gray-100]="user.role === 'ASSET_MANAGER'"
+                  [class.text-gray-800]="user.role === 'ASSET_MANAGER'"
+                >
+                  {{ formatRole(user.role) }}
+                </span>
+              </td>
+              <td class="py-4 px-6">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [class.bg-green-100]="user.status === 'active'"
+                  [class.text-green-800]="user.status === 'active'"
+                  [class.bg-red-100]="user.status === 'inactive'"
+                  [class.text-red-800]="user.status === 'inactive'"
+                  [class.bg-yellow-100]="user.status === 'pending'"
+                  [class.text-yellow-800]="user.status === 'pending'"
+                >
+                  {{ user.status | titlecase }}
+                </span>
+              </td>
+              <td class="py-4 px-6">
+                <span
+                  *ngIf="user.lastLogin; else noLogin"
+                  class="text-sm text-gray-900"
+                >
+                  {{ formatDate(user.lastLogin) }}
+                </span>
+                <ng-template #noLogin>
+                  <span class="text-sm text-gray-500 italic">Never</span>
+                </ng-template>
+              </td>
+              <td class="py-4 px-6">
+                <div class="flex items-center justify-center gap-2">
+                  <button
+                    (click)="onEditUser(user)"
+                    class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                    [pTooltip]="'Edit user'"
+                  >
+                    <i class="pi pi-pencil text-sm"></i>
+                  </button>
+                  <button
+                    (click)="onToggleStatus(user)"
+                    class="p-2 rounded-lg transition-colors"
+                    [class.text-yellow-600]="user.status === 'active'"
+                    [class.hover:bg-yellow-100]="user.status === 'active'"
+                    [class.text-green-600]="user.status !== 'active'"
+                    [class.hover:bg-green-100]="user.status !== 'active'"
+                    [pTooltip]="
+                      user.status === 'active'
+                        ? 'Deactivate user'
+                        : 'Activate user'
+                    "
+                  >
+                    <i
+                      class="pi text-sm"
+                      [class.pi-ban]="user.status === 'active'"
+                      [class.pi-check]="user.status !== 'active'"
+                    ></i>
+                  </button>
+                  <button
+                    (click)="onDeleteUser(user)"
+                    class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                    [pTooltip]="'Delete user'"
+                  >
+                    <i class="pi pi-trash text-sm"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center py-12">
+                <div class="flex flex-col items-center">
+                  <div
+                    class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4"
+                  >
+                    <i class="pi pi-users text-3xl text-gray-400"></i>
+                  </div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                    No users found
+                  </h3>
+                  <p class="text-gray-600 mb-4">
+                    Get started by adding your first user to the system
+                  </p>
+                  <button
+                    (click)="onAddUser()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <i class="pi pi-plus"></i>
+                    Add User
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <!-- Grid View -->
+      <div *ngIf="viewMode === 'grid'" class="p-6">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          <div
+            *ngFor="let user of users"
+            class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 hover:border-blue-300"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold"
+              >
                 {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
               </div>
-              <div class="user-details">
-                <div class="user-name">
-                  {{ user.firstName }} {{ user.lastName }}
-                </div>
-                <div class="user-id" *ngIf="user.employeeId">
-                  ID: {{ user.employeeId }}
-                </div>
-                <div class="user-id" *ngIf="user.studentId">
-                  ID: {{ user.studentId }}
-                </div>
-                <div class="user-department" *ngIf="user.department">
-                  {{ user.department }}
-                </div>
+              <div class="flex gap-1">
+                <button
+                  (click)="onEditUser(user)"
+                  class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                  [pTooltip]="'Edit user'"
+                >
+                  <i class="pi pi-pencil text-sm"></i>
+                </button>
+                <button
+                  (click)="onDeleteUser(user)"
+                  class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                  [pTooltip]="'Delete user'"
+                >
+                  <i class="pi pi-trash text-sm"></i>
+                </button>
               </div>
             </div>
-          </td>
-          <td>
-            <div class="email-cell">
-              {{ user.email }}
-              <div class="phone">{{ user.phone }}</div>
-            </div>
-          </td>
-          <td>
-            <p-tag
-              [value]="formatRole(user.role)"
-              [severity]="getRoleSeverity(user.role)"
-            ></p-tag>
-          </td>
-          <td>
-            <p-tag
-              [value]="user.status | titlecase"
-              [severity]="getStatusSeverity(user.status)"
-            ></p-tag>
-          </td>
-          <td>{{ formatDate(user.createdDate) }}</td>
-          <td>
-            <span *ngIf="user.lastLogin; else noLogin">
-              {{ formatDate(user.lastLogin) }}
-            </span>
-            <ng-template #noLogin>
-              <span class="no-login">Never</span>
-            </ng-template>
-          </td>
-          <td>
-            <div class="action-buttons">
-              <p-button
-                icon="pi pi-pencil"
-                (onClick)="onEditUser(user)"
-                styleClass="p-button-rounded p-button-text p-button-sm"
-                pTooltip="Edit user"
-              ></p-button>
-              <p-button
-                [icon]="user.status === 'active' ? 'pi pi-ban' : 'pi pi-check'"
-                (onClick)="onToggleStatus(user)"
-                [styleClass]="
-                  user.status === 'active'
-                    ? 'p-button-rounded p-button-text p-button-warning p-button-sm'
-                    : 'p-button-rounded p-button-text p-button-success p-button-sm'
-                "
-                [pTooltip]="
-                  user.status === 'active' ? 'Deactivate user' : 'Activate user'
-                "
-              ></p-button>
-              <p-button
-                icon="pi pi-trash"
-                (onClick)="onDeleteUser(user)"
-                styleClass="p-button-rounded p-button-text p-button-danger p-button-sm"
-                pTooltip="Delete user"
-              ></p-button>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
 
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="7" class="text-center">
-            <div class="empty-state">
-              <i class="pi pi-users"></i>
-              <h3>No users found</h3>
-              <p>Get started by adding your first user</p>
-              <p-button
-                label="Add User"
-                icon="pi pi-plus"
-                (onClick)="onAddUser()"
-              ></p-button>
+            <div class="text-center mb-4">
+              <h3 class="font-semibold text-gray-900 mb-1">
+                {{ user.firstName }} {{ user.lastName }}
+              </h3>
+              <p class="text-sm text-gray-600 mb-2">{{ user.email }}</p>
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                  [class.bg-red-100]="user.role === 'ADMIN'"
+                  [class.text-red-800]="user.role === 'ADMIN'"
+                  [class.bg-blue-100]="
+                    user.role === 'FACULTY' || user.role === 'HOD'
+                  "
+                  [class.text-blue-800]="
+                    user.role === 'FACULTY' || user.role === 'HOD'
+                  "
+                  [class.bg-green-100]="user.role === 'STUDENT'"
+                  [class.text-green-800]="user.role === 'STUDENT'"
+                  [class.bg-yellow-100]="user.role === 'ADMISSION_OFFICER'"
+                  [class.text-yellow-800]="user.role === 'ADMISSION_OFFICER'"
+                  [class.bg-purple-100]="user.role === 'LIBRARIAN'"
+                  [class.text-purple-800]="user.role === 'LIBRARIAN'"
+                  [class.bg-gray-100]="user.role === 'ASSET_MANAGER'"
+                  [class.text-gray-800]="user.role === 'ASSET_MANAGER'"
+                >
+                  {{ formatRole(user.role) }}
+                </span>
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                  [class.bg-green-100]="user.status === 'active'"
+                  [class.text-green-800]="user.status === 'active'"
+                  [class.bg-red-100]="user.status === 'inactive'"
+                  [class.text-red-800]="user.status === 'inactive'"
+                  [class.bg-yellow-100]="user.status === 'pending'"
+                  [class.text-yellow-800]="user.status === 'pending'"
+                >
+                  {{ user.status | titlecase }}
+                </span>
+              </div>
+              <div
+                class="text-xs text-gray-500"
+                *ngIf="user.employeeId || user.studentId"
+              >
+                ID: {{ user.employeeId || user.studentId }}
+              </div>
+              <div
+                class="text-xs text-blue-600 font-medium mt-1"
+                *ngIf="user.department"
+              >
+                {{ user.department }}
+              </div>
             </div>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </p-card>
+
+            <div class="text-center">
+              <div class="text-xs text-gray-500 mb-2">
+                Last Login:
+                <span *ngIf="user.lastLogin; else noLoginGrid">{{
+                  formatDate(user.lastLogin)
+                }}</span>
+                <ng-template #noLoginGrid
+                  ><span class="italic">Never</span></ng-template
+                >
+              </div>
+              <button
+                (click)="onToggleStatus(user)"
+                class="w-full py-2 rounded-lg text-sm font-medium transition-colors"
+                [class.bg-yellow-100]="user.status === 'active'"
+                [class.text-yellow-800]="user.status === 'active'"
+                [class.hover:bg-yellow-200]="user.status === 'active'"
+                [class.bg-green-100]="user.status !== 'active'"
+                [class.text-green-800]="user.status !== 'active'"
+                [class.hover:bg-green-200]="user.status !== 'active'"
+              >
+                {{ user.status === "active" ? "Deactivate" : "Activate" }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State for Grid -->
+        <div *ngIf="users?.length === 0" class="text-center py-12">
+          <div
+            class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <i class="pi pi-users text-4xl text-gray-400"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-3">
+            No users found
+          </h3>
+          <p class="text-gray-600 mb-6">
+            Get started by adding your first user to the system
+          </p>
+          <button
+            (click)="onAddUser()"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
+          >
+            <i class="pi pi-plus"></i>
+            Add User
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- User Form Dialog -->
   <app-user-form
@@ -174,5 +583,8 @@
   ></app-user-form>
 
   <!-- Confirmation Dialog -->
-  <p-confirmDialog></p-confirmDialog>
+  <p-confirmDialog styleClass="modern-confirm-dialog"></p-confirmDialog>
+
+  <!-- Toast for notifications -->
+  <p-toast position="top-right"></p-toast>
 </div>

@@ -1,252 +1,446 @@
-<div class="admin-dashboard">
-  <!-- Header Section -->
-  <div class="dashboard-header">
-    <div class="header-content">
-      <div class="welcome-section">
-        <h1>
-          <i class="pi pi-shield gradient-icon"></i>
-          Admin Dashboard
-        </h1>
-        <p>Welcome back! Here's what's happening at Oriental College today.</p>
-      </div>
-      <div class="header-actions">
-        <div class="date-info">
-          <i class="pi pi-calendar"></i>
-          <span>{{ getCurrentDate() }}</span>
-        </div>
-        <p-button
-          label="Generate Report"
-          icon="pi pi-download"
-          styleClass="p-button-outlined header-btn"
-        ></p-button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats Cards -->
-  <div class="stats-section">
-    <div class="stats-grid" *ngIf="!loading">
+<div
+  class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50"
+>
+  <!-- Modern Header with Gradient -->
+  <div
+    class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl shadow-2xl mx-4 lg:mx-6 mt-4 lg:mt-6 mb-6 lg:mb-8 overflow-hidden relative"
+  >
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-white/5 opacity-20">
       <div
-        class="stat-card"
-        *ngFor="let stat of getStatCards(); trackBy: trackByStatId"
-      >
-        <div class="stat-header">
-          <div class="stat-icon" [ngClass]="stat.iconClass">
-            <i [class]="stat.icon"></i>
-          </div>
-          <div class="stat-trend" [ngClass]="stat.trendClass">
-            <i [class]="stat.trendIcon"></i>
-            <span>{{ stat.trend }}</span>
-          </div>
-        </div>
-        <div class="stat-content">
-          <h3>{{ stat.value }}</h3>
-          <p>{{ stat.label }}</p>
-          <div class="stat-detail">
-            <span>{{ stat.detail }}</span>
-          </div>
-        </div>
-        <div class="stat-footer">
-          <div class="progress-bar">
-            <div
-              class="progress-fill"
-              [style.width.%]="stat.progress"
-              [ngClass]="stat.progressClass"
-            ></div>
-          </div>
-          <span class="progress-text">{{ stat.progressText }}</span>
-        </div>
-      </div>
+        class="absolute inset-0"
+        style="
+          background-image:
+            radial-gradient(
+              circle at 20% 50%,
+              rgba(255, 255, 255, 0.1) 2px,
+              transparent 2px
+            ),
+            radial-gradient(
+              circle at 80% 50%,
+              rgba(255, 255, 255, 0.1) 2px,
+              transparent 2px
+            );
+          background-size: 60px 60px;
+        "
+      ></div>
     </div>
 
-    <!-- Enhanced Loading State -->
-    <div class="stats-grid loading-grid" *ngIf="loading">
-      <div class="stat-card loading" *ngFor="let item of [1, 2, 3, 4]">
-        <div class="loading-content">
-          <div class="loading-header">
-            <div class="loading-circle shimmer"></div>
-            <div class="loading-trend shimmer"></div>
+    <div class="relative p-6 lg:p-8">
+      <div
+        class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6"
+      >
+        <div class="flex-1">
+          <div class="mb-4">
+            <h1
+              class="text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent"
+            >
+              Admin Dashboard
+            </h1>
+            <p
+              class="text-indigo-100 text-base lg:text-lg mb-4 leading-relaxed max-w-2xl"
+            >
+              Welcome back! Here's what's happening at Oriental College today
+            </p>
           </div>
-          <div class="loading-body">
-            <div class="loading-number shimmer"></div>
-            <div class="loading-text shimmer"></div>
-            <div class="loading-detail shimmer"></div>
+          <div class="flex flex-wrap gap-3">
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm border border-white/20"
+            >
+              <i class="pi pi-calendar mr-2 text-sm"></i>
+              {{ getCurrentDate() }}
+            </span>
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm border border-white/20"
+            >
+              <i class="pi pi-users mr-2 text-sm"></i>
+              {{ stats.activeUsers }} Active Users
+            </span>
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-emerald-500/30 backdrop-blur-sm border border-emerald-400/30"
+            >
+              <i class="pi pi-shield mr-2 text-sm"></i>
+              All Systems Operational
+            </span>
           </div>
-          <div class="loading-footer shimmer"></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row xl:flex-col gap-3 min-w-fit">
+          <button
+            (click)="generateReport()"
+            [disabled]="loading"
+            class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 font-medium"
+          >
+            <i class="pi pi-download text-lg"></i>
+            <span>Generate Report</span>
+          </button>
+          <div class="flex gap-3">
+            <button
+              (click)="showNotifications()"
+              class="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/20 text-white px-5 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 hover:shadow-lg font-medium relative"
+            >
+              <i class="pi pi-bell text-sm"></i>
+              <span>Notifications</span>
+              <div
+                class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold"
+              >
+                5
+              </div>
+            </button>
+            <button
+              (click)="loadDashboardData()"
+              [disabled]="loading"
+              class="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/20 text-white px-5 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 disabled:opacity-50 hover:shadow-lg font-medium"
+            >
+              <i
+                class="pi pi-refresh text-sm"
+                [class.animate-spin]="loading"
+              ></i>
+              <span>Refresh</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Content Grid -->
-  <div class="content-grid">
-    <!-- Recent Activities -->
-    <div class="activity-section">
-      <p-card styleClass="activity-card">
-        <ng-template pTemplate="header">
-          <div class="card-header">
-            <div class="header-title">
-              <i class="pi pi-clock"></i>
-              <h3>Recent Activities</h3>
-            </div>
-            <p-button
-              icon="pi pi-refresh"
-              styleClass="p-button-text p-button-sm"
-              (onClick)="loadDashboardData()"
-              [loading]="loading"
-              pTooltip="Refresh"
-            ></p-button>
-          </div>
-        </ng-template>
-
-        <div class="activities-container">
-          <div class="activity-timeline">
-            <div
-              class="activity-item"
-              *ngFor="
-                let activity of recentActivities;
-                trackBy: trackByActivityId;
-                let first = first
-              "
-              [class.first]="first"
-            >
-              <div class="activity-indicator">
-                <div class="activity-dot" [ngClass]="activity.severity"></div>
-                <div class="activity-line" *ngIf="!last"></div>
-              </div>
-              <div class="activity-card-inner">
-                <div class="activity-header">
-                  <div class="activity-icon" [ngClass]="activity.severity">
-                    <i [class]="getActivityIcon(activity.type)"></i>
-                  </div>
-                  <div class="activity-meta">
-                    <span class="activity-time">{{
-                      formatTimeAgo(activity.timestamp)
-                    }}</span>
-                    <p-tag
-                      [value]="formatActivityType(activity.type)"
-                      [severity]="activity.severity"
-                      styleClass="activity-tag"
-                    ></p-tag>
-                  </div>
-                </div>
-                <div class="activity-content">
-                  <p>{{ activity.message }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="no-activities"
-            *ngIf="recentActivities.length === 0 && !loading"
-          >
-            <div class="empty-state">
-              <i class="pi pi-info-circle"></i>
-              <h4>No Recent Activities</h4>
-              <p>System activities will appear here</p>
-            </div>
-          </div>
-        </div>
-      </p-card>
+  <!-- Loading State -->
+  <div
+    *ngIf="loading"
+    class="flex items-center justify-center min-h-[400px] mx-6"
+  >
+    <div class="text-center">
+      <div
+        class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+      ></div>
+      <p class="text-gray-600 font-medium">Loading dashboard data...</p>
     </div>
+  </div>
 
-    <!-- System Overview -->
-    <div class="overview-section">
-      <!-- System Health -->
-      <p-card header="System Health" styleClass="health-card">
-        <div class="health-grid">
-          <div class="health-item" *ngFor="let item of systemHealth | keyvalue">
-            <div class="health-card-inner">
-              <div class="health-header">
-                <div
-                  class="health-icon"
-                  [ngClass]="getHealthSeverity(item.value.status)"
-                >
-                  <i [class]="getHealthIcon(item.value.status)"></i>
-                </div>
-                <div class="health-info">
-                  <h4>{{ item.key | titlecase }}</h4>
-                  <p-tag
-                    [value]="item.value.status | titlecase"
-                    [severity]="getHealthSeverity(item.value.status)"
-                    styleClass="health-tag"
-                  ></p-tag>
-                </div>
-              </div>
-              <div class="health-details">
-                <div class="health-metrics">
-                  <span *ngIf="item.value.responseTime" class="metric">
-                    <i class="pi pi-clock"></i>
-                    {{ item.value.responseTime }}
-                  </span>
-                  <span *ngIf="item.value.uptime" class="metric">
-                    <i class="pi pi-chart-line"></i>
-                    {{ item.value.uptime }}
-                  </span>
-                  <span *ngIf="item.value.usage" class="metric">
-                    <i class="pi pi-server"></i>
-                    {{ item.value.usage }}
-                  </span>
-                  <span *ngIf="item.value.lastBackup" class="metric">
-                    <i class="pi pi-save"></i>
-                    {{ item.value.lastBackup }}
-                  </span>
-                </div>
-              </div>
+  <!-- Statistics Cards -->
+  <div *ngIf="!loading" class="px-4 lg:px-6 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Total Users -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+            >
+              <i class="pi pi-users text-blue-600 text-xl"></i>
             </div>
           </div>
-        </div>
-      </p-card>
-
-      <!-- Quick Actions Grid -->
-      <div class="quick-actions-section">
-        <h3 class="section-title">
-          <i class="pi pi-bolt"></i>
-          Quick Actions
-        </h3>
-        <div class="actions-grid">
-          <div
-            class="action-card"
-            *ngFor="let action of quickActions; trackBy: trackByActionId"
-            [routerLink]="action.route"
-            [ngClass]="action.cardClass"
-          >
-            <div class="action-icon">
-              <i [class]="action.icon"></i>
-            </div>
-            <div class="action-content">
-              <h4>{{ action.label }}</h4>
-              <p>{{ action.description }}</p>
-            </div>
-            <div class="action-arrow">
-              <i class="pi pi-arrow-right"></i>
-            </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-600">Total Users</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ stats.totalUsers || 0 }}
+            </p>
+            <p class="text-xs text-green-600 flex items-center mt-1">
+              <i class="pi pi-arrow-up mr-1"></i>
+              +12% from last month
+            </p>
           </div>
         </div>
       </div>
 
-      <!-- Performance Metrics -->
-      <p-card header="Performance Overview" styleClass="metrics-card">
-        <div class="metrics-grid">
-          <div class="metric-item" *ngFor="let metric of performanceMetrics">
-            <div class="metric-header">
-              <span class="metric-label">{{ metric.label }}</span>
-              <span class="metric-value" [ngClass]="metric.status">{{
-                metric.value
-              }}</span>
+      <!-- Academic Programs -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+            >
+              <i class="pi pi-book text-green-600 text-xl"></i>
             </div>
-            <div class="metric-bar">
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-600">Academic Programs</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ stats.totalCourses || 0 }}
+            </p>
+            <p class="text-xs text-green-600 flex items-center mt-1">
+              <i class="pi pi-arrow-up mr-1"></i>
+              +8% from last month
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Admissions -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+            >
+              <i class="pi pi-file-edit text-purple-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-600">Pending Admissions</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ stats.pendingAdmissions || 0 }}
+            </p>
+            <p class="text-xs text-orange-600 flex items-center mt-1">
+              <i class="pi pi-arrow-down mr-1"></i>
+              -5% from last month
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faculty & Staff -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center"
+            >
+              <i class="pi pi-user-edit text-orange-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-600">Faculty & Staff</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (stats.facultyMembers || 0) + (stats.admissionOfficers || 0) }}
+            </p>
+            <p class="text-xs text-green-600 flex items-center mt-1">
+              <i class="pi pi-arrow-up mr-1"></i>
+              +3% from last month
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading" class="px-4 lg:px-6 space-y-6">
+    <!-- Quick Actions Grid -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+          <i class="pi pi-bolt text-blue-600 mr-2"></i>
+          Quick Actions
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          *ngFor="let action of quickActions; trackBy: trackByActionId"
+          [routerLink]="action.route"
+          class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer group"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <div
+              class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors"
+            >
+              <i [class]="action.icon + ' text-blue-600 text-lg'"></i>
+            </div>
+            <i
+              class="pi pi-arrow-right text-gray-400 group-hover:text-blue-600 transition-colors"
+            ></i>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-1">{{ action.label }}</h3>
+          <p class="text-sm text-gray-600">{{ action.description }}</p>
+          <div class="mt-2 text-xs text-blue-600 font-medium">
+            {{ getActionStat(action.id) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+          <i class="pi pi-clock text-blue-600 mr-2"></i>
+          Recent Activities
+        </h2>
+        <button
+          (click)="loadDashboardData()"
+          class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+          [class.animate-spin]="loading"
+        >
+          <i class="pi pi-refresh text-xs" [class.animate-spin]="loading"></i>
+          Refresh
+        </button>
+      </div>
+
+      <div *ngIf="recentActivities.length > 0" class="space-y-3">
+        <div
+          *ngFor="let activity of recentActivities.slice(0, 5)"
+          class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+          (click)="viewActivityDetails(activity)"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center mr-4"
+              [class.bg-green-100]="activity.severity === 'success'"
+              [class.text-green-600]="activity.severity === 'success'"
+              [class.bg-blue-100]="activity.severity === 'info'"
+              [class.text-blue-600]="activity.severity === 'info'"
+              [class.bg-yellow-100]="
+                activity.severity === 'warning' || activity.severity === 'warn'
+              "
+              [class.text-yellow-600]="
+                activity.severity === 'warning' || activity.severity === 'warn'
+              "
+              [class.bg-red-100]="activity.severity === 'danger'"
+              [class.text-red-600]="activity.severity === 'danger'"
+            >
+              <i [class]="getActivityIcon(activity.type)"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 text-sm">
+                {{ activity.message }}
+              </h3>
+              <p class="text-xs text-gray-600">
+                {{ formatTimeAgo(activity.timestamp) }} •
+                {{ activity.user || "System" }}
+              </p>
+            </div>
+          </div>
+          <span
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+            [class.bg-green-100]="activity.severity === 'success'"
+            [class.text-green-800]="activity.severity === 'success'"
+            [class.bg-blue-100]="activity.severity === 'info'"
+            [class.text-blue-800]="activity.severity === 'info'"
+            [class.bg-yellow-100]="
+              activity.severity === 'warning' || activity.severity === 'warn'
+            "
+            [class.text-yellow-800]="
+              activity.severity === 'warning' || activity.severity === 'warn'
+            "
+            [class.bg-red-100]="activity.severity === 'danger'"
+            [class.text-red-800]="activity.severity === 'danger'"
+          >
+            {{ formatActivityType(activity.type) }}
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="recentActivities.length === 0" class="text-center py-8">
+        <i class="pi pi-clock text-gray-400 text-3xl mb-2"></i>
+        <p class="text-gray-500">No recent activities</p>
+      </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+          <i class="pi pi-shield text-green-600 mr-2"></i>
+          System Health
+        </h2>
+        <span
+          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+        >
+          <i class="pi pi-check-circle mr-1"></i>
+          All Systems Operational
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          *ngFor="let item of systemHealth | keyvalue"
+          class="text-center p-4 border border-gray-200 rounded-lg"
+        >
+          <div
+            class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
+            [class.bg-green-100]="item.value.status === 'healthy'"
+            [class.bg-red-100]="item.value.status !== 'healthy'"
+          >
+            <i
+              [class]="getHealthIcon(item.value.status)"
+              [class.text-green-600]="item.value.status === 'healthy'"
+              [class.text-red-600]="item.value.status !== 'healthy'"
+            ></i>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-1">
+            {{ item.key | titlecase }}
+          </h3>
+          <p class="text-xs text-gray-600 mb-2">
+            {{
+              item.value.responseTime ||
+                item.value.uptime ||
+                item.value.usage ||
+                item.value.lastBackup
+            }}
+          </p>
+          <span
+            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+            [class.bg-green-100]="item.value.status === 'healthy'"
+            [class.text-green-800]="item.value.status === 'healthy'"
+            [class.bg-red-100]="item.value.status !== 'healthy'"
+            [class.text-red-800]="item.value.status !== 'healthy'"
+          >
+            {{ item.value.status | titlecase }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+          <i class="pi pi-chart-bar text-purple-600 mr-2"></i>
+          Performance Overview
+        </h2>
+        <button
+          (click)="refreshMetrics()"
+          class="text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center gap-1"
+        >
+          <i class="pi pi-refresh text-xs"></i>
+          Refresh
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div
+          *ngFor="let metric of performanceMetrics"
+          class="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center mr-4"
+              [class.bg-green-100]="metric.status === 'excellent'"
+              [class.text-green-600]="metric.status === 'excellent'"
+              [class.bg-blue-100]="metric.status === 'good'"
+              [class.text-blue-600]="metric.status === 'good'"
+              [class.bg-yellow-100]="metric.status === 'warning'"
+              [class.text-yellow-600]="metric.status === 'warning'"
+            >
+              <i class="pi pi-chart-line"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900">{{ metric.label }}</h3>
+              <p class="text-sm text-gray-600">{{ metric.description }}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="text-2xl font-bold"
+              [class.text-green-600]="metric.status === 'excellent'"
+              [class.text-blue-600]="metric.status === 'good'"
+              [class.text-yellow-600]="metric.status === 'warning'"
+            >
+              {{ metric.value }}
+            </div>
+            <div class="w-24 bg-gray-200 rounded-full h-2 mt-2">
               <div
-                class="metric-fill"
+                class="h-2 rounded-full transition-all duration-500"
                 [style.width.%]="metric.percentage"
-                [ngClass]="metric.status"
+                [class.bg-green-500]="metric.status === 'excellent'"
+                [class.bg-blue-500]="metric.status === 'good'"
+                [class.bg-yellow-500]="metric.status === 'warning'"
               ></div>
             </div>
-            <div class="metric-description">{{ metric.description }}</div>
           </div>
         </div>
-      </p-card>
+      </div>
     </div>
   </div>
 </div>

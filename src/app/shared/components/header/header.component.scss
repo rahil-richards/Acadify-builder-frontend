@@ -15,7 +15,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
     opacity: 0.05;
     pointer-events: none;
   }
@@ -52,7 +52,7 @@
       position: relative;
 
       &:hover {
-        background: rgba(103, 126, 234, 0.1);
+        background: rgba(29, 78, 216, 0.1);
         transform: scale(1.05);
       }
 
@@ -64,14 +64,14 @@
         span {
           width: 20px;
           height: 2px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
           border-radius: 2px;
           transition: all 0.3s ease;
         }
       }
 
       &:hover .hamburger span {
-        background: #667eea;
+        background: #1d4ed8;
       }
     }
 
@@ -85,11 +85,11 @@
           width: 48px;
           height: 48px;
           border-radius: 16px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+          box-shadow: 0 8px 24px rgba(29, 78, 216, 0.3);
           transition: all 0.3s ease;
 
           i {
@@ -99,7 +99,7 @@
 
           &:hover {
             transform: scale(1.05);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 32px rgba(29, 78, 216, 0.4);
           }
         }
 
@@ -108,7 +108,7 @@
             margin: 0;
             font-size: 1.4rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -163,7 +163,7 @@
               transition: color 0.2s ease;
 
               &:hover {
-                color: #667eea;
+                color: #1d4ed8;
               }
             }
 
@@ -213,8 +213,8 @@
       color: #64748b;
 
       &:hover {
-        background: rgba(103, 126, 234, 0.1);
-        color: #667eea;
+        background: rgba(29, 78, 216, 0.1);
+        color: #1d4ed8;
         transform: translateY(-1px);
       }
 
@@ -256,7 +256,7 @@
 
       &:hover {
         background: rgba(255, 255, 255, 0.9);
-        border-color: rgba(103, 126, 234, 0.2);
+        border-color: rgba(29, 78, 216, 0.2);
         transform: translateY(-1px);
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       }
@@ -265,7 +265,7 @@
         width: 36px;
         height: 36px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -314,7 +314,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: rgba(103, 126, 234, 0.1);
+    background: rgba(29, 78, 216, 0.1);
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -325,7 +325,7 @@
 
     .loading-progress {
       height: 100%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
       animation: loading 2s ease-in-out infinite;
     }
   }
@@ -409,7 +409,7 @@
 
     .user-menu-header {
       padding: 2rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
       color: white;
       text-align: center;
 
@@ -469,8 +469,8 @@
         text-align: left;
 
         &:hover {
-          background: rgba(103, 126, 234, 0.05);
-          color: #667eea;
+          background: rgba(29, 78, 216, 0.05);
+          color: #1d4ed8;
         }
 
         &.logout {
@@ -583,9 +583,9 @@
 
         &:focus {
           outline: none;
-          border-color: #667eea;
+          border-color: #1d4ed8;
           background: white;
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
         }
 
         &::placeholder {
@@ -652,7 +652,7 @@
 
             i {
               font-size: 1.2rem;
-              color: #667eea;
+              color: #1d4ed8;
               width: 24px;
             }
 

@@ -1,0 +1,456 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// Statistics Cards
+.stats-card {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Student Search Results
+.student-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eff6ff !important;
+    border-color: #3b82f6 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Enhanced Button Styles
+.p-button-primary {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  border: none;
+
+  &:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.p-button-outlined {
+  border: 2px solid #1d4ed8;
+  color: #1d4ed8;
+
+  &:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 78, 216, 0.3);
+  }
+}
+
+// Enhanced Table Styles
+::ng-deep .p-datatable {
+  .p-datatable-thead > tr > th {
+    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 1rem;
+
+    &:first-child {
+      border-radius: 0;
+    }
+
+    &:last-child {
+      border-radius: 0;
+    }
+  }
+
+  .p-datatable-tbody > tr {
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    > td {
+      padding: 1rem;
+      border: none;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+  }
+
+  .p-paginator {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: none;
+    border-radius: 0 0 1rem 1rem;
+    padding: 1rem;
+  }
+}
+
+// Form Enhancements
+::ng-deep .p-inputtext,
+::ng-deep .p-inputnumber-input,
+::ng-deep .p-inputtextarea {
+  border-radius: 0.75rem;
+  border: 2px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+    outline: none;
+  }
+
+  &.border-red-500 {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+}
+
+::ng-deep .p-inputnumber {
+  width: 100%;
+
+  .p-inputnumber-input {
+    width: 100%;
+  }
+}
+
+::ng-deep .p-calendar {
+  width: 100%;
+
+  .p-calendar-button {
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+
+  .p-datepicker {
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Dialog Enhancements
+::ng-deep .p-dialog {
+  .p-dialog-header {
+    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+    color: white;
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.5rem;
+
+    .p-dialog-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+
+    .p-dialog-header-icons {
+      .p-dialog-header-close {
+        color: white;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+  }
+
+  .p-dialog-content {
+    padding: 2rem;
+    background: #fafafa;
+  }
+
+  .p-dialog-footer {
+    padding: 1.5rem 2rem;
+    background: #f8fafc;
+    border-radius: 0 0 1rem 1rem;
+  }
+}
+
+// Receipt Number Display
+.receipt-number {
+  font-family: "Courier New", monospace;
+  font-size: 0.875rem;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  display: inline-block;
+}
+
+// Tag Styles
+::ng-deep .p-tag {
+  border-radius: 1rem;
+  padding: 0.375rem 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+
+  &.p-tag-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+
+  &.p-tag-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+
+  &.p-tag-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+
+  &.p-tag-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+  }
+}
+
+// Search Section
+.search-section {
+  .search-input {
+    border-radius: 0.75rem;
+    border: 2px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: #1d4ed8;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+      outline: none;
+    }
+  }
+}
+
+// Loading States
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+::ng-deep .p-progress-spinner {
+  .p-progress-spinner-svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .p-progress-spinner-circle {
+    stroke: #1d4ed8;
+    stroke-width: 3;
+  }
+}
+
+// Amount Display
+.amount-display {
+  font-weight: 700;
+  font-size: 1.125rem;
+
+  &.positive {
+    color: #059669;
+  }
+
+  &.outstanding {
+    color: #dc2626;
+  }
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+
+  .empty-icon {
+    font-size: 4rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-description {
+    color: #6b7280;
+  }
+}
+
+// Form Group Styling
+.form-group {
+  label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .required {
+    color: #ef4444;
+  }
+
+  small {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+
+    &.text-red-500 {
+      color: #ef4444;
+    }
+  }
+}
+
+// Animation Classes
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .grid {
+    &.md\\:grid-cols-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &.md\\:grid-cols-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &.md\\:grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  ::ng-deep .p-dialog {
+    width: 95vw !important;
+    max-width: none !important;
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    &.md\\:grid-cols-4 {
+      grid-template-columns: 1fr;
+    }
+
+    &.md\\:grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+
+    &.md\\:grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .flex {
+    &.md\\:flex-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .p-6 {
+    padding: 1rem;
+  }
+
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+
+  ::ng-deep .p-datatable {
+    font-size: 0.875rem;
+
+    .p-datatable-thead > tr > th,
+    .p-datatable-tbody > tr > td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .flex-wrap {
+    flex-direction: column;
+    align-items: stretch;
+
+    .gap-3 > * {
+      width: 100%;
+    }
+  }
+
+  .student-card {
+    padding: 1rem;
+  }
+}
+
+// Hover Effects
+.hover-lift {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+
+  &:hover {
+    background: #a8a8a8;
+  }
+}

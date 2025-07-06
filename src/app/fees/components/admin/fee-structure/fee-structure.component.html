@@ -1,0 +1,376 @@
+<div class="beautiful-page">
+  <!-- Header Section -->
+  <div class="beautiful-header">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+          Fee Structure Management
+        </h1>
+        <p class="text-gray-600 text-lg">
+          Configure and manage fee structures for different courses and
+          semesters
+        </p>
+      </div>
+      <div class="hidden md:flex items-center space-x-4">
+        <div
+          class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"
+        >
+          <i class="pi pi-dollar text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="px-6 py-8">
+    <!-- Action Bar -->
+    <div class="beautiful-container">
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+      >
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800">Fee Structures</h2>
+          <p class="text-gray-600 text-sm mt-1">
+            Manage fee structures for different academic programs
+          </p>
+        </div>
+        <button
+          pButton
+          type="button"
+          label="Add New Structure"
+          icon="pi pi-plus"
+          class="p-button-primary"
+          (click)="openNewDialog()"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Fee Structures Table -->
+    <div class="beautiful-container">
+      <p-table
+        [value]="feeStructures"
+        [loading]="loading"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        styleClass="p-datatable-lg"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-left">Course</th>
+            <th class="text-left">Semester</th>
+            <th class="text-left">Academic Year</th>
+            <th class="text-right">Total Fee</th>
+            <th class="text-center">Due Date</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-structure>
+          <tr>
+            <td class="font-semibold text-gray-800">{{ structure.course }}</td>
+            <td class="text-gray-600">Semester {{ structure.semester }}</td>
+            <td class="text-gray-600">{{ structure.academicYear }}</td>
+            <td class="text-right font-semibold text-green-600">
+              {{ formatCurrency(structure.totalFee) }}
+            </td>
+            <td class="text-center text-gray-600">
+              {{ structure.dueDate | date: "dd MMM yyyy" }}
+            </td>
+            <td class="text-center">
+              <p-tag
+                [value]="getStatusText(structure.isActive)"
+                [severity]="getSeverity(structure.isActive)"
+              >
+              </p-tag>
+            </td>
+            <td class="text-center">
+              <div class="flex justify-center space-x-1">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-eye"
+                  class="p-button-text p-button-rounded p-button-sm"
+                  pTooltip="View Details"
+                  tooltipPosition="top"
+                  (click)="editFeeStructure(structure)"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  class="p-button-text p-button-rounded p-button-sm"
+                  pTooltip="Edit"
+                  tooltipPosition="top"
+                  (click)="editFeeStructure(structure)"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  [icon]="structure.isActive ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                  class="p-button-text p-button-rounded p-button-sm"
+                  [class.p-button-warning]="structure.isActive"
+                  [class.p-button-success]="!structure.isActive"
+                  [pTooltip]="structure.isActive ? 'Deactivate' : 'Activate'"
+                  tooltipPosition="top"
+                  (click)="toggleStatus(structure)"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-text p-button-rounded p-button-sm p-button-danger"
+                  pTooltip="Delete"
+                  tooltipPosition="top"
+                  (click)="deleteFeeStructure(structure)"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center py-12">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4"
+                >
+                  <i class="pi pi-dollar text-gray-400 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  No fee structures found
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Get started by creating your first fee structure
+                </p>
+                <button
+                  pButton
+                  type="button"
+                  label="Add Fee Structure"
+                  icon="pi pi-plus"
+                  class="p-button-primary p-button-sm"
+                  (click)="openNewDialog()"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!-- Fee Structure Dialog -->
+<p-dialog
+  [header]="editMode ? 'Edit Fee Structure' : 'Add New Fee Structure'"
+  [(visible)]="displayDialog"
+  [style]="{ width: '800px' }"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="feeStructureForm" (ngSubmit)="saveFeeStructure()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Course -->
+      <div class="form-field">
+        <label for="course"> Course <span class="required">*</span> </label>
+        <p-dropdown
+          id="course"
+          formControlName="course"
+          [options]="courses"
+          placeholder="Select Course"
+          styleClass="w-full"
+        >
+        </p-dropdown>
+      </div>
+
+      <!-- Semester -->
+      <div class="form-field">
+        <label for="semester"> Semester <span class="required">*</span> </label>
+        <p-dropdown
+          id="semester"
+          formControlName="semester"
+          [options]="semesters"
+          placeholder="Select Semester"
+          styleClass="w-full"
+        >
+        </p-dropdown>
+      </div>
+
+      <!-- Academic Year -->
+      <div class="form-field">
+        <label for="academicYear">
+          Academic Year <span class="required">*</span>
+        </label>
+        <p-dropdown
+          id="academicYear"
+          formControlName="academicYear"
+          [options]="academicYears"
+          placeholder="Select Academic Year"
+          styleClass="w-full"
+        >
+        </p-dropdown>
+      </div>
+
+      <!-- Due Date -->
+      <div class="form-field">
+        <label for="dueDate"> Due Date <span class="required">*</span> </label>
+        <p-calendar
+          id="dueDate"
+          formControlName="dueDate"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="Select Due Date"
+          styleClass="w-full"
+        >
+        </p-calendar>
+      </div>
+
+      <!-- Tuition Fee -->
+      <div class="form-field">
+        <label for="tuitionFee">
+          Tuition Fee <span class="required">*</span>
+        </label>
+        <p-inputNumber
+          id="tuitionFee"
+          formControlName="tuitionFee"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+
+      <!-- Library Fee -->
+      <div class="form-field">
+        <label for="libraryFee">
+          Library Fee <span class="required">*</span>
+        </label>
+        <p-inputNumber
+          id="libraryFee"
+          formControlName="libraryFee"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+
+      <!-- Laboratory Fee -->
+      <div class="form-field">
+        <label for="laboratoryFee">
+          Laboratory Fee <span class="required">*</span>
+        </label>
+        <p-inputNumber
+          id="laboratoryFee"
+          formControlName="laboratoryFee"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+
+      <!-- Development Fee -->
+      <div class="form-field">
+        <label for="developmentFee">
+          Development Fee <span class="required">*</span>
+        </label>
+        <p-inputNumber
+          id="developmentFee"
+          formControlName="developmentFee"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+
+      <!-- Miscellaneous Fee -->
+      <div class="form-field">
+        <label for="miscellaneousFee">
+          Miscellaneous Fee <span class="required">*</span>
+        </label>
+        <p-inputNumber
+          id="miscellaneousFee"
+          formControlName="miscellaneousFee"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+
+      <!-- Late Fine -->
+      <div class="form-field">
+        <label for="lateFine">
+          Late Fine (per day) <span class="required">*</span>
+        </label>
+        <p-inputNumber
+          id="lateFine"
+          formControlName="lateFine"
+          mode="currency"
+          currency="INR"
+          locale="en-IN"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+    </div>
+
+    <!-- Total Fee Display -->
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="flex justify-between items-center">
+        <span class="text-lg font-semibold text-gray-700">Total Fee:</span>
+        <span class="text-2xl font-bold text-blue-600">{{
+          formatCurrency(calculateTotalFee())
+        }}</span>
+      </div>
+    </div>
+
+    <!-- Active Status -->
+    <div class="form-field">
+      <div class="flex items-center">
+        <p-checkbox id="isActive" formControlName="isActive" [binary]="true">
+        </p-checkbox>
+        <label for="isActive" class="ml-2"> Active Fee Structure </label>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end space-x-3">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="displayDialog = false"
+      ></button>
+      <button
+        pButton
+        type="button"
+        [label]="editMode ? 'Update' : 'Create'"
+        icon="pi pi-check"
+        class="p-button-primary"
+        [disabled]="!feeStructureForm.valid"
+        (click)="saveFeeStructure()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast Messages -->
+<p-toast></p-toast>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog></p-confirmDialog>

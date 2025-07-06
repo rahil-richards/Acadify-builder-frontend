@@ -1,0 +1,321 @@
+<div class="beautiful-page">
+  <!-- Header Section -->
+  <div class="beautiful-header">
+    <div class="beautiful-header-content">
+      <div class="beautiful-header-text">
+        <h1>Make Payment</h1>
+        <p>Complete your fee payment securely</p>
+      </div>
+      <div class="beautiful-header-icon">
+        <i class="pi pi-credit-card"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="beautiful-container">
+    <!-- Back Button -->
+    <div class="mb-6">
+      <button
+        pButton
+        type="button"
+        label="Back to Fee Balance"
+        icon="pi pi-arrow-left"
+        class="p-button-text p-button-primary"
+        (click)="goBack()"
+      ></button>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+      <!-- Payment Success State -->
+      <div *ngIf="paymentSuccess" class="beautiful-card p-8 text-center">
+        <div
+          class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <i class="pi pi-check text-green-600 text-4xl"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">
+          Payment Successful!
+        </h2>
+        <p class="text-gray-600 text-lg mb-6">
+          Your payment has been processed successfully. You will be redirected
+          to your fee balance shortly.
+        </p>
+        <div class="flex justify-center space-x-4">
+          <button
+            pButton
+            type="button"
+            label="View Receipt"
+            icon="pi pi-download"
+            class="p-button-primary"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Back to Balance"
+            icon="pi pi-arrow-left"
+            class="p-button-outlined p-button-primary"
+            (click)="goBack()"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Payment Form -->
+      <div
+        *ngIf="!paymentSuccess"
+        class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+      >
+        <!-- Payment Form -->
+        <div class="lg:col-span-2">
+          <div class="beautiful-card p-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+              Payment Details
+            </h2>
+
+            <form [formGroup]="paymentForm" (ngSubmit)="processPayment()">
+              <!-- Payment Method Selection -->
+              <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-3">
+                  Select Payment Method <span class="text-red-500">*</span>
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div *ngFor="let method of paymentMethods" class="relative">
+                    <input
+                      type="radio"
+                      [id]="method.value"
+                      [value]="method.value"
+                      formControlName="paymentMethod"
+                      class="sr-only"
+                    />
+                    <label
+                      [for]="method.value"
+                      class="block p-4 border-2 rounded-xl cursor-pointer transition-all duration-300"
+                      [class.border-blue-500]="
+                        paymentForm.get('paymentMethod')?.value === method.value
+                      "
+                      [class.bg-blue-50]="
+                        paymentForm.get('paymentMethod')?.value === method.value
+                      "
+                      [class.border-gray-200]="
+                        paymentForm.get('paymentMethod')?.value !== method.value
+                      "
+                    >
+                      <div class="flex items-center space-x-3">
+                        <i
+                          [class]="method.icon"
+                          class="text-xl text-blue-600"
+                        ></i>
+                        <span class="font-medium text-gray-800">{{
+                          method.label
+                        }}</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- UPI ID Field (shown when UPI is selected) -->
+              <div
+                *ngIf="paymentForm.get('paymentMethod')?.value === 'upi'"
+                class="mb-6"
+              >
+                <label
+                  for="upiId"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  UPI ID <span class="text-red-500">*</span>
+                </label>
+                <input
+                  pInputText
+                  id="upiId"
+                  formControlName="upiId"
+                  placeholder="yourname@upi"
+                  class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                  [class.border-red-500]="isFieldInvalid('upiId')"
+                />
+                <small
+                  *ngIf="isFieldInvalid('upiId')"
+                  class="text-red-500 mt-1 block"
+                >
+                  {{ getFieldError("upiId") }}
+                </small>
+              </div>
+
+              <!-- Amount Field -->
+              <div class="mb-6">
+                <label
+                  for="amount"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Payment Amount <span class="text-red-500">*</span>
+                </label>
+                <p-inputNumber
+                  id="amount"
+                  formControlName="amount"
+                  mode="currency"
+                  currency="INR"
+                  locale="en-IN"
+                  [min]="1"
+                  [max]="selectedFee?.balanceAmount || 999999"
+                  styleClass="w-full"
+                >
+                </p-inputNumber>
+                <small
+                  *ngIf="isFieldInvalid('amount')"
+                  class="text-red-500 mt-1 block"
+                >
+                  {{ getFieldError("amount") }}
+                </small>
+                <small *ngIf="selectedFee" class="text-gray-600 mt-1 block">
+                  Maximum payable amount:
+                  {{ formatCurrency(selectedFee.balanceAmount) }}
+                </small>
+              </div>
+
+              <!-- Terms and Conditions -->
+              <div class="mb-6">
+                <div class="flex items-start space-x-3">
+                  <p-checkbox
+                    id="terms"
+                    formControlName="terms"
+                    [binary]="true"
+                  >
+                  </p-checkbox>
+                  <label
+                    for="terms"
+                    class="text-sm text-gray-700 leading-relaxed"
+                  >
+                    I agree to the
+                    <a href="#" class="text-blue-600 hover:underline"
+                      >Terms and Conditions</a
+                    >
+                    and
+                    <a href="#" class="text-blue-600 hover:underline"
+                      >Privacy Policy</a
+                    >. I understand that this payment is non-refundable except
+                    as per college policy.
+                  </label>
+                </div>
+                <small
+                  *ngIf="isFieldInvalid('terms')"
+                  class="text-red-500 mt-1 block"
+                >
+                  {{ getFieldError("terms") }}
+                </small>
+              </div>
+
+              <!-- Error Message -->
+              <div
+                *ngIf="paymentError"
+                class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
+              >
+                <div class="flex items-center space-x-2">
+                  <i class="pi pi-exclamation-triangle text-red-600"></i>
+                  <span class="text-red-800">{{ paymentError }}</span>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                pButton
+                type="submit"
+                [label]="processingPayment ? 'Processing...' : 'Pay Now'"
+                [icon]="
+                  processingPayment
+                    ? 'pi pi-spin pi-spinner'
+                    : 'pi pi-credit-card'
+                "
+                class="p-button-primary p-button-raised w-full p-4 text-lg"
+                [disabled]="!paymentForm.valid || processingPayment"
+              ></button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="lg:col-span-1">
+          <div class="beautiful-card p-6 sticky top-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">
+              Payment Summary
+            </h3>
+
+            <!-- Student Info -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+              <h4 class="font-semibold text-gray-800 mb-2">Student Details</h4>
+              <div class="space-y-1 text-sm">
+                <p>
+                  <span class="text-gray-600">Name:</span>
+                  {{ studentInfo.name }}
+                </p>
+                <p>
+                  <span class="text-gray-600">Roll No:</span>
+                  {{ studentInfo.rollNumber }}
+                </p>
+                <p>
+                  <span class="text-gray-600">Email:</span>
+                  {{ studentInfo.email }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Fee Details -->
+            <div *ngIf="selectedFee" class="mb-6 p-4 bg-blue-50 rounded-lg">
+              <h4 class="font-semibold text-gray-800 mb-2">Fee Details</h4>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Course:</span>
+                  <span class="font-medium">{{ selectedFee.course }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Semester:</span>
+                  <span class="font-medium">{{ selectedFee.semester }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Total Fee:</span>
+                  <span class="font-medium">{{
+                    formatCurrency(selectedFee.totalAmount)
+                  }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Paid Amount:</span>
+                  <span class="font-medium text-green-600">{{
+                    formatCurrency(selectedFee.paidAmount)
+                  }}</span>
+                </div>
+                <div class="flex justify-between border-t pt-2">
+                  <span class="text-gray-600">Balance:</span>
+                  <span class="font-semibold text-red-600">{{
+                    formatCurrency(selectedFee.balanceAmount)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Amount -->
+            <div class="mb-6">
+              <div
+                class="flex justify-between items-center p-4 bg-green-50 rounded-lg border border-green-200"
+              >
+                <span class="text-gray-700 font-medium">Paying Amount:</span>
+                <span class="text-2xl font-bold text-green-600">
+                  {{ formatCurrency(paymentForm.get("amount")?.value || 0) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Security Badge -->
+            <div
+              class="flex items-center justify-center space-x-2 text-sm text-gray-600"
+            >
+              <i class="pi pi-lock text-green-600"></i>
+              <span>Secured by SSL encryption</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Messages -->
+<p-toast></p-toast>
