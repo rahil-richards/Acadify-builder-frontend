@@ -1,25 +1,58 @@
 .personal-details-form {
   .form-section {
-    margin-bottom: 3rem;
-    padding: 0 0.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+    }
 
     h4 {
-      color: var(--primary-color);
-      font-size: 1.4rem;
-      font-weight: 600;
+      color: #1f2937;
+      font-size: 1.5rem;
+      font-weight: 700;
       margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--surface-border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      &::before {
+        content: "";
+        width: 2rem;
+        height: 2rem;
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
     }
 
     h5 {
-      color: var(--text-color);
-      font-size: 1.15rem;
-      font-weight: 500;
-      margin: 2.5rem 0 1.5rem 0;
+      color: #374151;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 2rem 0 1.5rem 0;
       grid-column: 1 / -1;
-      padding-left: 0.5rem;
-      border-left: 4px solid var(--primary-color);
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-radius: 0.75rem;
+      border-left: 4px solid #3b82f6;
     }
   }
 
@@ -58,18 +91,25 @@
   }
 
   .form-field {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
 
     label {
       display: block;
       margin-bottom: 0.75rem;
-      font-weight: 500;
-      color: var(--text-color);
-      font-size: 1rem;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
 
       &:after {
         content: " *";
-        color: #e24c4c;
+        color: #ef4444;
+        font-size: 1rem;
       }
     }
 
@@ -83,25 +123,82 @@
     :host ::ng-deep .p-inputtext,
     :host ::ng-deep .p-dropdown,
     :host ::ng-deep .p-calendar input {
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border-radius: var(--border-radius);
+      padding: 1rem 1.25rem;
+      font-size: 0.975rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      background: #ffffff;
+      transition: all 0.3s ease;
+      font-weight: 500;
+
+      &:hover {
+        border-color: #d1d5db;
+        background: #f9fafb;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      &.p-invalid {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      }
     }
 
     :host ::ng-deep .p-dropdown {
-      min-height: 3rem;
+      min-height: 3.25rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      background: #ffffff;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: #d1d5db;
+      }
+
+      &:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .p-dropdown-label {
+        padding: 1rem 1.25rem;
+        font-weight: 500;
+      }
+
+      .p-dropdown-trigger {
+        border-radius: 0 0.75rem 0.75rem 0;
+        background: #f9fafb;
+        border-left: 1px solid #e5e7eb;
+      }
     }
 
     p-checkbox {
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
 
-      .p-checkbox-label {
+      :host ::ng-deep .p-checkbox-label {
         margin-left: 0.75rem;
-        font-weight: normal;
-        font-size: 1rem;
+        font-weight: 500;
+        font-size: 0.975rem;
+        color: #374151;
 
         &:after {
           content: none;
+        }
+      }
+
+      :host ::ng-deep .p-checkbox-box {
+        border: 2px solid #e5e7eb;
+        border-radius: 0.375rem;
+        background: #ffffff;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: #3b82f6;
         }
       }
     }

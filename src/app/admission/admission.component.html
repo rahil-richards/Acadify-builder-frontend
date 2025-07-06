@@ -1,79 +1,246 @@
-<div class="admission-stepper">
-  <!-- Progress Steps -->
-  <div class="stepper-header">
-    <p-steps
-      [model]="steps"
-      [activeIndex]="activeIndex"
-      [readonly]="true"
-      styleClass="custom-steps"
-    ></p-steps>
-  </div>
+<!-- Modern Admission Application Form -->
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+>
+  <div class="admission-stepper">
+    <!-- Enhanced Header -->
+    <div class="form-header mb-8">
+      <div
+        class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 rounded-3xl shadow-2xl overflow-hidden relative"
+      >
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 bg-white/5 opacity-20">
+          <div
+            class="absolute inset-0"
+            style="
+              background-image:
+                radial-gradient(
+                  circle at 20% 50%,
+                  rgba(255, 255, 255, 0.1) 2px,
+                  transparent 2px
+                ),
+                radial-gradient(
+                  circle at 80% 50%,
+                  rgba(255, 255, 255, 0.1) 2px,
+                  transparent 2px
+                );
+              background-size: 60px 60px;
+            "
+          ></div>
+        </div>
 
-  <!-- Form Content -->
-  <div class="step-content">
-    <h2>{{ getStepTitle() }}</h2>
+        <div class="relative p-6 lg:p-8">
+          <div class="text-center">
+            <div class="mb-6">
+              <div
+                class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4"
+              >
+                <i class="pi pi-graduation-cap text-3xl text-white"></i>
+              </div>
+              <h1
+                class="text-3xl lg:text-4xl font-bold mb-3 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent"
+              >
+                {{
+                  isEditMode
+                    ? "Resubmit Application"
+                    : "Admission Application Form"
+                }}
+              </h1>
+              <p
+                class="text-indigo-100 text-base lg:text-lg leading-relaxed max-w-2xl mx-auto"
+              >
+                {{
+                  isEditMode
+                    ? "Update and resubmit your application with the required changes"
+                    : "Complete your application step by step to secure your admission to Oriental College"
+                }}
+              </p>
+            </div>
 
-    <!-- Personal Details Step -->
-    <app-personal-details
-      *ngIf="activeIndex === 0"
-      [formGroup]="personalDetailsForm"
-    ></app-personal-details>
+            <div class="flex justify-center gap-3 flex-wrap">
+              <span
+                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm border border-white/20"
+              >
+                <i class="pi pi-file-edit mr-2 text-sm"></i>
+                Step {{ activeIndex + 1 }} of {{ steps.length }}
+              </span>
+              <span
+                *ngIf="isEditMode"
+                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-amber-500/30 backdrop-blur-sm border border-amber-400/30"
+              >
+                <i class="pi pi-refresh mr-2 text-sm"></i>
+                Resubmission Mode
+              </span>
+              <span
+                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-emerald-500/30 backdrop-blur-sm border border-emerald-400/30"
+              >
+                <i class="pi pi-shield mr-2 text-sm"></i>
+                Data Auto-Saved
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- Category & Eligibility Step -->
-    <app-category-eligibility
-      *ngIf="activeIndex === 1"
-      [formGroup]="categoryEligibilityForm"
-    ></app-category-eligibility>
+    <!-- Enhanced Progress Steps -->
+    <div class="stepper-container mb-8">
+      <div
+        class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 p-6"
+      >
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+            Application Progress
+          </h3>
+          <p class="text-gray-600 text-sm">
+            Complete each step to submit your admission application
+          </p>
+        </div>
+        <p-steps
+          [model]="steps"
+          [activeIndex]="activeIndex"
+          [readonly]="true"
+          styleClass="modern-steps"
+        ></p-steps>
+      </div>
+    </div>
 
-    <!-- Academic Qualifications Step -->
-    <app-academic-qualifications
-      *ngIf="activeIndex === 2"
-      [formGroup]="academicQualificationsForm"
-    ></app-academic-qualifications>
+    <!-- Form Content -->
+    <div class="step-content-wrapper">
+      <div
+        class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 p-8"
+      >
+        <div class="step-content-header mb-6">
+          <div class="flex items-center gap-4 mb-4">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg"
+            >
+              <i class="pi pi-{{ getStepIcon() }} text-lg"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-800">
+                {{ getStepTitle() }}
+              </h2>
+              <p class="text-gray-600">{{ getStepDescription() }}</p>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div
+              class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500"
+              [style.width.%]="((activeIndex + 1) / steps.length) * 100"
+            ></div>
+          </div>
+        </div>
 
-    <!-- Parent/Guardian Details Step -->
-    <app-parent-guardian
-      *ngIf="activeIndex === 3"
-      [formGroup]="parentGuardianForm"
-    ></app-parent-guardian>
+        <div class="step-content">
+          <!-- Personal Details Step -->
+          <app-personal-details
+            *ngIf="activeIndex === 0"
+            [formGroup]="personalDetailsForm"
+          ></app-personal-details>
 
-    <!-- Documents & Declaration Step -->
-    <app-documents-declaration
-      *ngIf="activeIndex === 4"
-      [formGroup]="documentsDeclarationForm"
-    ></app-documents-declaration>
-  </div>
+          <!-- Category & Eligibility Step -->
+          <app-category-eligibility
+            *ngIf="activeIndex === 1"
+            [formGroup]="categoryEligibilityForm"
+          ></app-category-eligibility>
 
-  <!-- Navigation Actions -->
-  <div class="step-actions">
-    <p-button
-      label="Previous"
-      icon="pi pi-angle-left"
-      [disabled]="isFirstStep()"
-      (onClick)="previousStep()"
-      styleClass="p-button-outlined"
-    ></p-button>
+          <!-- Academic Qualifications Step -->
+          <app-academic-qualifications
+            *ngIf="activeIndex === 2"
+            [formGroup]="academicQualificationsForm"
+          ></app-academic-qualifications>
 
-    <div class="next-actions">
-      <p-button
-        *ngIf="!isLastStep()"
-        label="Next"
-        icon="pi pi-angle-right"
-        iconPos="right"
-        [disabled]="!canProceed()"
-        (onClick)="nextStep()"
-      ></p-button>
+          <!-- Parent/Guardian Details Step -->
+          <app-parent-guardian
+            *ngIf="activeIndex === 3"
+            [formGroup]="parentGuardianForm"
+          ></app-parent-guardian>
 
-      <p-button
-        *ngIf="isLastStep()"
-        label="Submit Application"
-        icon="pi pi-check"
-        iconPos="right"
-        [disabled]="!canProceed() || isSubmitting"
-        [loading]="isSubmitting"
-        (onClick)="submitApplication()"
-        styleClass="p-button-success"
-      ></p-button>
+          <!-- Documents & Declaration Step -->
+          <app-documents-declaration
+            *ngIf="activeIndex === 4"
+            [formGroup]="documentsDeclarationForm"
+          ></app-documents-declaration>
+        </div>
+
+        <!-- Enhanced Navigation Actions -->
+        <div class="step-actions mt-8 pt-6 border-t border-gray-200">
+          <div class="flex justify-between items-center">
+            <button
+              *ngIf="!isFirstStep()"
+              (click)="previousStep()"
+              class="px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all duration-200 font-medium border border-gray-200 flex items-center gap-2"
+            >
+              <i class="pi pi-arrow-left text-sm"></i>
+              <span>Previous</span>
+            </button>
+
+            <div *ngIf="isFirstStep()" class="w-24"></div>
+
+            <div class="flex items-center gap-4">
+              <!-- Step Indicator -->
+              <div
+                class="hidden sm:flex items-center gap-2 text-sm text-gray-600"
+              >
+                <span class="font-medium">{{ activeIndex + 1 }}</span>
+                <span>of</span>
+                <span class="font-medium">{{ steps.length }}</span>
+                <span>steps</span>
+              </div>
+
+              <!-- Form Validation Status -->
+              <div
+                class="flex items-center gap-2"
+                *ngIf="!canProceed() && getCurrentForm().touched"
+              >
+                <i class="pi pi-exclamation-triangle text-amber-500"></i>
+                <span class="text-sm text-amber-600 font-medium"
+                  >Please complete required fields</span
+                >
+              </div>
+
+              <div
+                class="flex items-center gap-2"
+                *ngIf="canProceed() && getCurrentForm().touched"
+              >
+                <i class="pi pi-check-circle text-emerald-500"></i>
+                <span class="text-sm text-emerald-600 font-medium"
+                  >Step completed</span
+                >
+              </div>
+            </div>
+
+            <div class="next-actions">
+              <button
+                *ngIf="!isLastStep()"
+                (click)="nextStep()"
+                [disabled]="!canProceed()"
+                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg transform hover:scale-105 active:scale-95 flex items-center gap-2"
+              >
+                <span>Continue</span>
+                <i class="pi pi-arrow-right text-sm"></i>
+              </button>
+
+              <button
+                *ngIf="isLastStep()"
+                (click)="submitApplication()"
+                [disabled]="!canProceed() || isSubmitting"
+                class="px-8 py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg transform hover:scale-105 active:scale-95 flex items-center gap-2"
+              >
+                <i
+                  class="pi pi-{{
+                    isSubmitting ? 'spin pi-spinner' : 'send'
+                  }} text-sm"
+                ></i>
+                <span>{{
+                  isEditMode ? "Resubmit Application" : "Submit Application"
+                }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

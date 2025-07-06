@@ -22,13 +22,35 @@
           </div>
           <div class="logo-text">
             <h3>Oriental College</h3>
-            <span>Portal</span>
+            <span>Management Portal</span>
           </div>
         </div>
       </div>
       <button class="close-btn" (click)="onHide()">
         <i class="pi pi-times"></i>
       </button>
+    </div>
+
+    <!-- User Profile Section -->
+    <div class="user-profile" *ngIf="currentUser">
+      <div class="user-avatar">
+        <div class="avatar-circle">
+          <i class="pi pi-user"></i>
+        </div>
+        <div class="user-status-indicator"></div>
+      </div>
+      <div class="user-info">
+        <div class="user-name">{{ currentUser.name }}</div>
+        <div class="user-role">
+          <span
+            class="role-badge"
+            [class]="'role-' + currentUser.role.toLowerCase()"
+          >
+            {{ getUserRoleDisplayName() }}
+          </span>
+        </div>
+        <div class="user-email">{{ currentUser.email }}</div>
+      </div>
     </div>
   </div>
 

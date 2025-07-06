@@ -18,6 +18,7 @@ import { LoginComponent } from "./login/login.component";
 // Services
 import { AuthService } from "./services/auth.service";
 import { AuthGuard } from "./guards/auth.guard";
+import { RoleGuard } from "./guards/role.guard";
 
 const routes = [
   {
@@ -42,6 +43,6 @@ const routes = [
     MessageModule,
     MessagesModule,
   ],
-  providers: [AuthGuard, MessageService],
+  providers: [AuthGuard, RoleGuard, MessageService],
 })
 export class AuthModule {}
