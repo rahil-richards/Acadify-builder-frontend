@@ -12,7 +12,6 @@ const routes: Routes = [
   {
     path: "status",
     component: ApplicationStatusComponent,
-    // No guard - openly accessible for prospective students
   },
   {
     path: "payment",
