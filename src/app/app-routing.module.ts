@@ -67,12 +67,6 @@ const routes: Routes = [
     data: { roles: [UserRole.ASSET_MANAGER, UserRole.ADMIN] },
   },
   {
-    path: "fees",
-    loadChildren: () => import("./fees/fees.module").then((m) => m.FeesModule),
-    canActivate: [RoleGuard],
-    data: { roles: [UserRole.STUDENT, UserRole.ADMIN, UserRole.ACCOUNTANT] },
-  },
-  {
     path: "**",
     redirectTo: "/login",
   },
